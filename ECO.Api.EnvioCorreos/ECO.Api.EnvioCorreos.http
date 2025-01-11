@@ -1,0 +1,6 @@
+@ECO.Api.EnvioCorreos_HostAddress = http://localhost:5125
+
+GET {{ECO.Api.EnvioCorreos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
