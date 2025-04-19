@@ -1,10 +1,10 @@
-using ECO.Api.EnvioCorreos.Infraestructura;
-using ECO.Servicio.Implementaciones;
-using ECO.Servicio.Interfaces;
+using ECO.Api.EnvioCorreos.Middlewares;
+using ECO.Aplicacion.CasosUso.Implementaciones;
+using ECO.Aplicacion.CasosUso.Interfaces;
+using ECO.Aplicacion.Servicios.Implementaciones;
+using ECO.Aplicacion.Servicios.Interfaces;
 using log4net;
 using log4net.Config;
-using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICorreoServicio, CorreoServicio>();
+builder.Services.AddScoped<IApiResponse, ApiResponse>();
 
 // Configuración de log4net
 var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());

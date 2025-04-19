@@ -5,11 +5,11 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECO.Api.EnvioCorreos", "ECO.Api.EnvioCorreos.csproj", "{7E9DBB8B-613E-45C2-B28E-24E865BCF922}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECO.Servicio", "..\ECO.Servicio\ECO.Servicio.csproj", "{DF465D24-EE9C-490E-8B26-7005E80DDCE1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECO.Dtos", "..\ECO.Dto\ECO.Dtos.csproj", "{A08F5F32-C963-4F84-9A8F-807957647988}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilidades", "..\..\Utilidades\Utilidades.csproj", "{E4FEF8AC-3CC8-4B19-89A0-06098B373AE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECO.Aplicacion", "..\ECO.Aplicacion\ECO.Aplicacion.csproj", "{AA789C30-C494-4243-A2B7-2A567601358B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{7E9DBB8B-613E-45C2-B28E-24E865BCF922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E9DBB8B-613E-45C2-B28E-24E865BCF922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E9DBB8B-613E-45C2-B28E-24E865BCF922}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF465D24-EE9C-490E-8B26-7005E80DDCE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF465D24-EE9C-490E-8B26-7005E80DDCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF465D24-EE9C-490E-8B26-7005E80DDCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF465D24-EE9C-490E-8B26-7005E80DDCE1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A08F5F32-C963-4F84-9A8F-807957647988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A08F5F32-C963-4F84-9A8F-807957647988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08F5F32-C963-4F84-9A8F-807957647988}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{E4FEF8AC-3CC8-4B19-89A0-06098B373AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4FEF8AC-3CC8-4B19-89A0-06098B373AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4FEF8AC-3CC8-4B19-89A0-06098B373AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA789C30-C494-4243-A2B7-2A567601358B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA789C30-C494-4243-A2B7-2A567601358B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA789C30-C494-4243-A2B7-2A567601358B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA789C30-C494-4243-A2B7-2A567601358B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

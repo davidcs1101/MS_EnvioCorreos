@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ECO.Dtos;
-using ECO.Servicio;
-using ECO.Servicio.Interfaces;
-using Microsoft.Extensions.Configuration;
-using Utilidades;
-using Microsoft.AspNetCore.Authorization;
+using ECO.Aplicacion.CasosUso.Interfaces;
 
 namespace ECO.Api.EnvioCorreos.Controllers
 {
