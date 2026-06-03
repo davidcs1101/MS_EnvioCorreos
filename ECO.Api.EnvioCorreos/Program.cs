@@ -3,8 +3,10 @@ using ECO.Aplicacion.CasosUso.Implementaciones;
 using ECO.Aplicacion.CasosUso.Interfaces;
 using ECO.Aplicacion.Servicios.Implementaciones;
 using ECO.Aplicacion.Servicios.Interfaces;
+using ECO.DataAccess;
 using log4net;
 using log4net.Config;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,15 @@ builder.Services.AddScoped<IApiResponse, ApiResponse>();
 var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 builder.Services.AddLogging(loggingBuilder => {loggingBuilder.AddLog4Net();});
+
+
+builder.Services.AddDbContext<AppDbContext>
+    (opciones => opciones
+    .UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
+    //ServerVersion.Parse("8.0.39-mysql")
+    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
+
 
 var app = builder.Build();
 

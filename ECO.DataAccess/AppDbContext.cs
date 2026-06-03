@@ -17,5 +17,8 @@ namespace ECO.DataAccess
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder){}
 
         public DbSet<ECO_ColaSolicitud> ECO_ColaSolicitudes { get; set; }
+        public DbSet<ECO_Correo> ECO_Correos { get; set; }
+        public DbSet<ECO_CorreoDestinatario> ECO_CorreoDestinatarios { get; set; }
+        public DbSet<ECO_CorreoAdjunto> ECO_CorreoAdjuntos { get; set; }
     }
 }

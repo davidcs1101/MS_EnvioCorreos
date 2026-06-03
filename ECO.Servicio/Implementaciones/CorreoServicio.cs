@@ -47,7 +47,7 @@ namespace ECO.Servicio.Implementaciones
                 AgregarDestinatarios(mensaje, datosCorreoDto);
                 mensaje.Subject = datosCorreoDto.Asunto;
                 mensaje.Body = datosCorreoDto.Cuerpo;
-                mensaje.IsBodyHtml = datosCorreoDto.esCuerpoHtml;
+                mensaje.IsBodyHtml = datosCorreoDto.EsCuerpoHtml;
                 AgregarAdjuntos(mensaje, datosCorreoDto.ArchivosAdjuntos);
 
                 using (var smtpClient = new SmtpClient(host, Convert.ToInt32(puerto)))

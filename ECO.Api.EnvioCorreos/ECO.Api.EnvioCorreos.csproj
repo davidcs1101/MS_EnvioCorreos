@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
@@ -24,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ECO.Aplicacion\ECO.Aplicacion.csproj" />
+    <ProjectReference Include="..\ECO.DataAccess\ECO.DataAccess.csproj" />
     <ProjectReference Include="..\ECO.Dto\ECO.Dtos.csproj" />
   </ItemGroup>
 
