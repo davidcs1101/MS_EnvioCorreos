@@ -15,7 +15,7 @@ namespace ECO.Servicio.Implementaciones
             _configuracion = configuration;
         }
 
-        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoDto datosCorreoDto)
+        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoRequest datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             // Obtener la configuración del correo desde appsettings.json o una fuente similar
@@ -63,7 +63,7 @@ namespace ECO.Servicio.Implementaciones
             }
         }
 
-        private void AgregarDestinatarios(MailMessage mensaje, DatoCorreoDto datosCorreoDto)
+        private void AgregarDestinatarios(MailMessage mensaje, DatoCorreoRequest datosCorreoDto)
         {
             foreach (var item in datosCorreoDto.Destinatarios)
                 mensaje.To.Add(item);

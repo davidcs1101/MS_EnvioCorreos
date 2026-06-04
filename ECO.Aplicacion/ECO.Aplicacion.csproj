@@ -14,4 +14,9 @@
     <ProjectReference Include="..\ECO.Dto\ECO.Dtos.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CasosUso\Implementaciones\" />
+    <Folder Include="CasosUso\Interfaces\" />
+  </ItemGroup>
+
 </Project>

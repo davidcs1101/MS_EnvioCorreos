@@ -9,6 +9,6 @@ namespace ECO.Servicio.Interfaces
 {
     public interface ICorreoServicio
     {
-        Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoDto datosCorreo);
+        Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoRequest datosCorreo);
     }
 }

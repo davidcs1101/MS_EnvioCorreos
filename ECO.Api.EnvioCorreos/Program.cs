@@ -1,9 +1,11 @@
 using ECO.Api.EnvioCorreos.Middlewares;
-using ECO.Aplicacion.CasosUso.Implementaciones;
-using ECO.Aplicacion.CasosUso.Interfaces;
 using ECO.Aplicacion.Servicios.Implementaciones;
 using ECO.Aplicacion.Servicios.Interfaces;
+using ECO.Aplicacion.ServiciosExternos;
 using ECO.DataAccess;
+using ECO.Dominio.Repositorio;
+using ECO.Infraestructura.Aplicacion.ServiciosExternos;
+using ECO.Infraestructura.Dominio.Repositorio;
 using log4net;
 using log4net.Config;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<ICorreoRepositorio, CorreoRepositorio>();
+builder.Services.AddScoped<ICorreoDestinatarioRepositorio, CorreoDestinatarioRepositorio>();
+builder.Services.AddScoped<ICorreoAdjuntoRepositorio, CorreoAdjuntoRepositorio>();
+builder.Services.AddScoped<IColaSolicitudRepositorio, ColaSolicitudRepositorio>();
 
 builder.Services.AddScoped<ICorreoServicio, CorreoServicio>();
 builder.Services.AddScoped<IApiResponse, ApiResponse>();

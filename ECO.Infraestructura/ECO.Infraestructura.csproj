@@ -7,9 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Aplicacion\" />
-    <Folder Include="Dominio\" />
-    <Folder Include="Mapeo\" />
+    <PackageReference Include="Riok.Mapperly" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ECO.Aplicacion\ECO.Aplicacion.csproj" />
+    <ProjectReference Include="..\ECO.DataAccess\ECO.DataAccess.csproj" />
+    <ProjectReference Include="..\ECO.Dominio\ECO.Dominio.csproj" />
   </ItemGroup>
 
 </Project>

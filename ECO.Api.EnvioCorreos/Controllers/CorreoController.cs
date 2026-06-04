@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ECO.Dtos;
-using ECO.Aplicacion.CasosUso.Interfaces;
+using ECO.Aplicacion.ServiciosExternos;
 
 namespace ECO.Api.EnvioCorreos.Controllers
 {
@@ -16,7 +16,7 @@ namespace ECO.Api.EnvioCorreos.Controllers
         }
 
         [HttpPost("enviarCorreo")]
-        public async Task<ActionResult<ApiResponse<string>>> EnviarCorreo(DatoCorreoDto datosCorreoDto) 
+        public async Task<ActionResult<ApiResponse<string>>> EnviarCorreo(DatoCorreoRequest datosCorreoDto) 
         {
             return await _correoServicio.EnviarCorreoAsync(datosCorreoDto);
         }

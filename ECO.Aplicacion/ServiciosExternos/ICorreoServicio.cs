@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ECO.Aplicacion.CasosUso.Interfaces
+namespace ECO.Aplicacion.ServiciosExternos
 {
     public interface ICorreoServicio
     {
-        Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoDto datosCorreo);
+        Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoRequest datosCorreo);
     }
 }

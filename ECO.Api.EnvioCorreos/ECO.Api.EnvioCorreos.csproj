@@ -30,6 +30,7 @@
     <ProjectReference Include="..\ECO.Aplicacion\ECO.Aplicacion.csproj" />
     <ProjectReference Include="..\ECO.DataAccess\ECO.DataAccess.csproj" />
     <ProjectReference Include="..\ECO.Dto\ECO.Dtos.csproj" />
+    <ProjectReference Include="..\ECO.Infraestructura\ECO.Infraestructura.csproj" />
   </ItemGroup>
 
 </Project>
