@@ -8,18 +8,18 @@ using ECO.Aplicacion.ServiciosExternos;
 
 namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
 {
-    public class CorreoServicio : ICorreoServicio
+    public class EnvioCorreoServicio : IEnvioCorreoServicio
     {
         private readonly IConfiguration _configuracion;
         private readonly IApiResponse _apiResponse;
 
-        public CorreoServicio(IConfiguration configuration, IApiResponse apiResponse)
+        public EnvioCorreoServicio(IConfiguration configuration, IApiResponse apiResponse)
         {
             _configuracion = configuration;
             _apiResponse = apiResponse;
         }
 
-        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoRequest datosCorreoDto)
+        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatosCorreoRequest datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             // Obtener la configuración del correo desde appsettings.json o una fuente similar
@@ -68,7 +68,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             }
         }
 
-        private void AgregarDestinatarios(MailMessage mensaje, DatoCorreoRequest datosCorreoDto)
+        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoRequest datosCorreoDto)
         {
             foreach (var item in datosCorreoDto.Destinatarios)
                 mensaje.To.Add(item);

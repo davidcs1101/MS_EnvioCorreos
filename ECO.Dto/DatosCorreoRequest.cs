@@ -9,7 +9,7 @@ using Utilidades.AtributosValidaciones;
 
 namespace ECO.Dtos
 {
-    public class DatoCorreoRequest
+    public class DatosCorreoRequest
     {
         [ListaDebeContenerElementos(ErrorMessage = "Debe existir al menos un destinatario.")]
         [ListaCorreosValidos]

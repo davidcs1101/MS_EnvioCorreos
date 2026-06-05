@@ -1,9 +1,11 @@
-﻿using ECO.Dtos;
+﻿using ECO.Dominio.Entidades;
+using ECO.Dtos;
 
 namespace ECO.Aplicacion.ServiciosExternos.Mapeo
 {
     public interface IMapperPerfiles
     {
-        DatoCorreoDto DatoCorreoRequestADatoCorreoDto(DatoCorreoRequest datoCorreoRequest);
+        DatosCorreoDto DatoCorreoRequestADatoCorreoDto(DatosCorreoRequest datoCorreoRequest);
+        ECO_Correo DatoCorreoRequestACorreo(DatosCorreoRequest datoCorreoRequest);
     }
 }

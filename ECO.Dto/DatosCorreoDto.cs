@@ -4,7 +4,7 @@ using Utilidades.AtributosValidaciones;
 
 namespace ECO.Dtos
 {
-    public class DatoCorreoDto
+    public class DatosCorreoDto
     {
         public List<string> Destinatarios { get; set; } = new List<string>();
         public List<string> CC { get; set; } = new List<string>();
@@ -14,6 +14,8 @@ namespace ECO.Dtos
         public string Cuerpo { get; set; } = null!;
         public bool EsCuerpoHtml { get; set; }
         public List<ArchivoAdjuntoDto> ArchivosAdjuntos { get; set; } = new List<ArchivoAdjuntoDto>();
+        public AccionesDto Acciones { get; set; } = new AccionesDto();
         public int CorreoId { get; set; }
+        public bool GuardarEmlCorreo { get; set; }
     }
 }

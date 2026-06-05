@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ECO.Aplicacion.ServiciosExternos
 {
-    public interface ICorreoServicio
+    public interface IEnvioCorreoServicio
     {
-        Task<ApiResponse<string>> EnviarCorreoAsync(DatoCorreoRequest datosCorreo);
+        Task<ApiResponse<string>> EnviarCorreoAsync(DatosCorreoRequest datosCorreo);
     }
 }

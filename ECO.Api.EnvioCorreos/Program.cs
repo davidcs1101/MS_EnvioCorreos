@@ -23,7 +23,7 @@ builder.Services.AddScoped<ICorreoDestinatarioRepositorio, CorreoDestinatarioRep
 builder.Services.AddScoped<ICorreoAdjuntoRepositorio, CorreoAdjuntoRepositorio>();
 builder.Services.AddScoped<IColaSolicitudRepositorio, ColaSolicitudRepositorio>();
 
-builder.Services.AddScoped<ICorreoServicio, CorreoServicio>();
+builder.Services.AddScoped<IEnvioCorreoServicio, EnvioCorreoServicio>();
 builder.Services.AddScoped<IApiResponse, ApiResponse>();
 
 // Configuración de log4net
