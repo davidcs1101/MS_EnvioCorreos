@@ -2,6 +2,7 @@
 using ECO.Dtos;
 using ECO.Aplicacion.ServiciosExternos;
 using ECO.Aplicacion.CasosUso.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ECO.Api.EnvioCorreos.Controllers
 {
@@ -17,6 +18,7 @@ namespace ECO.Api.EnvioCorreos.Controllers
         }
 
         [HttpPost("enviarCorreo")]
+        [Authorize]
         public async Task<ActionResult<ApiResponse<int>>> EnviarCorreo(DatosCorreoRequest datosCorreoDto) 
         {
             return await _correoServicio.CrearAsync(datosCorreoDto);

@@ -21,7 +21,10 @@ using Hangfire;
 using Hangfire.MySql;
 using log4net;
 using log4net.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +39,27 @@ var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntry
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 builder.Services.AddLogging(loggingBuilder => {loggingBuilder.AddLog4Net();});
 
+// Configuracion de JWT
+var configuracionJWT = builder.Configuration.GetSection("JWT");
+var issuer = configuracionJWT["Emisor"];
+var audience = configuracionJWT["Audiencia"];
+var key = configuracionJWT["Llave"];
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer
+    (opcion =>
+    {
+        opcion.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+            ClockSkew = TimeSpan.Zero //No se permite tolerancia de tiempo una vez el token caduca (por defecto es 5 minutos si no se establece)
+        };
+    });
 
 //Mapperly
 builder.Services.AddSingleton<IMapperPerfiles, MapperPerfiles>();
@@ -94,6 +118,7 @@ builder.Services.AddHangfire(opciones =>
 //Necesario para correr el background job server
 builder.Services.AddHangfireServer(opciones => { opciones.ServerName = "MSEmpresasServer"; });
 
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
