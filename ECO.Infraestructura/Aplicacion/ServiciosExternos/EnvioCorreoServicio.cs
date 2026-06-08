@@ -19,7 +19,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             _apiResponse = apiResponse;
         }
 
-        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatosCorreoRequest datosCorreoDto)
+        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             // Obtener la configuración del correo desde appsettings.json o una fuente similar
@@ -45,6 +45,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             }
 
             CorreoRespuesta = string.IsNullOrWhiteSpace(datosCorreoDto.CorreoRespuesta) ? CorreoRespuesta : datosCorreoDto.CorreoRespuesta;
+
             using (var mensaje = new MailMessage())
             {
                 mensaje.From = new MailAddress(usuario, CorreoRespuesta);
@@ -68,7 +69,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             }
         }
 
-        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoRequest datosCorreoDto)
+        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoDto datosCorreoDto)
         {
             foreach (var item in datosCorreoDto.Destinatarios)
                 mensaje.To.Add(item);

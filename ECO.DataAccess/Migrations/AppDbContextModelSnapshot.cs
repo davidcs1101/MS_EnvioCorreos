@@ -93,6 +93,10 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("longtext")
                         .HasComment("Contenido del correo electrónico.");
 
+                    b.Property<int?>("EmpresaId")
+                        .HasColumnType("int")
+                        .HasComment("Empresa desde la cual se solicitó el envío de correo");
+
                     b.Property<string>("ErrorMensaje")
                         .HasColumnType("text")
                         .HasComment("Descripción del último error presentado durante el envío.");
@@ -164,7 +168,7 @@ namespace ECO.DataAccess.Migrations
 
                     b.HasIndex("CorreoId");
 
-                    b.ToTable("ECO_CorreoAdjuntos");
+                    b.ToTable("ECO_CorreosAdjuntos");
                 });
 
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoDestinatario", b =>
@@ -198,13 +202,45 @@ namespace ECO.DataAccess.Migrations
 
                     b.HasIndex("Tipo");
 
-                    b.ToTable("ECO_CorreoDestinatarios");
+                    b.ToTable("ECO_CorreosDestinatarios");
+                });
+
+            modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoEml", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("ContenidoArchivo")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.Property<int>("CorreoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaCreado")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("TamanoBytes")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CorreoId");
+
+                    b.ToTable("ECO_CorreosEml");
                 });
 
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoAdjunto", b =>
                 {
                     b.HasOne("ECO.Dominio.Entidades.ECO_Correo", "Correo")
-                        .WithMany("CorreoAdjuntos")
+                        .WithMany("CorreosAdjuntos")
                         .HasForeignKey("CorreoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -215,7 +251,18 @@ namespace ECO.DataAccess.Migrations
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoDestinatario", b =>
                 {
                     b.HasOne("ECO.Dominio.Entidades.ECO_Correo", "Correo")
-                        .WithMany("CorreoDestinatarios")
+                        .WithMany("CorreosDestinatarios")
+                        .HasForeignKey("CorreoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Correo");
+                });
+
+            modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoEml", b =>
+                {
+                    b.HasOne("ECO.Dominio.Entidades.ECO_Correo", "Correo")
+                        .WithMany("CorreosEml")
                         .HasForeignKey("CorreoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -225,9 +272,11 @@ namespace ECO.DataAccess.Migrations
 
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_Correo", b =>
                 {
-                    b.Navigation("CorreoAdjuntos");
+                    b.Navigation("CorreosAdjuntos");
 
-                    b.Navigation("CorreoDestinatarios");
+                    b.Navigation("CorreosDestinatarios");
+
+                    b.Navigation("CorreosEml");
                 });
 #pragma warning restore 612, 618
         }

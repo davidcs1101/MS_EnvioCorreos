@@ -34,15 +34,23 @@ namespace ECO.DataAccess.EntidadesConfig
             builder.Property(x => x.FechaEnvio).HasColumnType("datetime")
                 .HasComment("Fecha y hora en que el correo fue enviado exitosamente.");
 
+            builder.Property(x => x.EmpresaId)
+                .HasComment("Empresa desde la cual se solicitó el envío de correo");
+
             builder.Property(x => x.FechaCreado).HasColumnType("datetime");
 
 
-            builder.HasMany(x => x.CorreoDestinatarios)
+            builder.HasMany(x => x.CorreosDestinatarios)
                 .WithOne(x => x.Correo)
                 .HasForeignKey(x => x.CorreoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.CorreoAdjuntos)
+            builder.HasMany(x => x.CorreosAdjuntos)
+                .WithOne(x => x.Correo)
+                .HasForeignKey(x => x.CorreoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.CorreosEml)
                 .WithOne(x => x.Correo)
                 .HasForeignKey(x => x.CorreoId)
                 .OnDelete(DeleteBehavior.Restrict);

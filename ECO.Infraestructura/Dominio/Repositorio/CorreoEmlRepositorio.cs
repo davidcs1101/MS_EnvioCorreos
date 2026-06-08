@@ -4,18 +4,18 @@ using ECO.Dominio.Entidades;
 
 namespace ECO.Infraestructura.Dominio.Repositorio
 {
-    public class CorreoAdjuntoRepositorio : ICorreoAdjuntoRepositorio
+    public class CorreoEmlRepositorio : ICorreoEmlRepositorio
     {
         private readonly AppDbContext _context;
 
-        public CorreoAdjuntoRepositorio(AppDbContext context)
+        public CorreoEmlRepositorio(AppDbContext context)
         {
             _context = context;
         }
 
-        public void MarcarCrear(ECO_CorreoAdjunto correoAdjunto)
+        public void MarcarCrear(ECO_CorreoEml correoEml)
         {
-            _context.ECO_CorreosAdjuntos.Add(correoAdjunto);
+            _context.ECO_CorreosEml.Add(correoEml);
         }
     }
 }

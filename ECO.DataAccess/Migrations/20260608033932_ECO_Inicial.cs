@@ -55,6 +55,7 @@ namespace ECO.DataAccess.Migrations
                     ErrorMensaje = table.Column<string>(type: "text", nullable: true, comment: "Descripción del último error presentado durante el envío.")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FechaEnvio = table.Column<DateTime>(type: "datetime", nullable: true, comment: "Fecha y hora en que el correo fue enviado exitosamente."),
+                    EmpresaId = table.Column<int>(type: "int", nullable: true, comment: "Empresa desde la cual se solicitó el envío de correo"),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -64,7 +65,7 @@ namespace ECO.DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ECO_CorreoAdjuntos",
+                name: "ECO_CorreosAdjuntos",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -82,9 +83,9 @@ namespace ECO.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ECO_CorreoAdjuntos", x => x.Id);
+                    table.PrimaryKey("PK_ECO_CorreosAdjuntos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ECO_CorreoAdjuntos_ECO_Correos_CorreoId",
+                        name: "FK_ECO_CorreosAdjuntos_ECO_Correos_CorreoId",
                         column: x => x.CorreoId,
                         principalTable: "ECO_Correos",
                         principalColumn: "Id",
@@ -93,7 +94,7 @@ namespace ECO.DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ECO_CorreoDestinatarios",
+                name: "ECO_CorreosDestinatarios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -106,9 +107,34 @@ namespace ECO.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ECO_CorreoDestinatarios", x => x.Id);
+                    table.PrimaryKey("PK_ECO_CorreosDestinatarios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ECO_CorreoDestinatarios_ECO_Correos_CorreoId",
+                        name: "FK_ECO_CorreosDestinatarios_ECO_Correos_CorreoId",
+                        column: x => x.CorreoId,
+                        principalTable: "ECO_Correos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ECO_CorreosEml",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CorreoId = table.Column<int>(type: "int", nullable: false),
+                    Nombre = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TamanoBytes = table.Column<long>(type: "bigint", nullable: false),
+                    ContenidoArchivo = table.Column<byte[]>(type: "longblob", nullable: false),
+                    FechaCreado = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ECO_CorreosEml", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ECO_CorreosEml_ECO_Correos_CorreoId",
                         column: x => x.CorreoId,
                         principalTable: "ECO_Correos",
                         principalColumn: "Id",
@@ -127,26 +153,6 @@ namespace ECO.DataAccess.Migrations
                 column: "Tipo");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ECO_CorreoAdjuntos_CorreoId",
-                table: "ECO_CorreoAdjuntos",
-                column: "CorreoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ECO_CorreoDestinatarios_CorreoId",
-                table: "ECO_CorreoDestinatarios",
-                column: "CorreoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ECO_CorreoDestinatarios_Destinatario",
-                table: "ECO_CorreoDestinatarios",
-                column: "Destinatario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ECO_CorreoDestinatarios_Tipo",
-                table: "ECO_CorreoDestinatarios",
-                column: "Tipo");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ECO_Correos_Estado",
                 table: "ECO_Correos",
                 column: "Estado");
@@ -160,6 +166,31 @@ namespace ECO.DataAccess.Migrations
                 name: "IX_ECO_Correos_FechaEnvio",
                 table: "ECO_Correos",
                 column: "FechaEnvio");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosAdjuntos_CorreoId",
+                table: "ECO_CorreosAdjuntos",
+                column: "CorreoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosDestinatarios_CorreoId",
+                table: "ECO_CorreosDestinatarios",
+                column: "CorreoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosDestinatarios_Destinatario",
+                table: "ECO_CorreosDestinatarios",
+                column: "Destinatario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosDestinatarios_Tipo",
+                table: "ECO_CorreosDestinatarios",
+                column: "Tipo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosEml_CorreoId",
+                table: "ECO_CorreosEml",
+                column: "CorreoId");
         }
 
         /// <inheritdoc />
@@ -169,10 +200,13 @@ namespace ECO.DataAccess.Migrations
                 name: "ECO_ColaSolicitudes");
 
             migrationBuilder.DropTable(
-                name: "ECO_CorreoAdjuntos");
+                name: "ECO_CorreosAdjuntos");
 
             migrationBuilder.DropTable(
-                name: "ECO_CorreoDestinatarios");
+                name: "ECO_CorreosDestinatarios");
+
+            migrationBuilder.DropTable(
+                name: "ECO_CorreosEml");
 
             migrationBuilder.DropTable(
                 name: "ECO_Correos");

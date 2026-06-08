@@ -15,7 +15,7 @@ namespace ECO.Infraestructura.Dominio.Repositorio
 
         public void MarcarCrear(ECO_CorreoDestinatario correoDestinatario)
         {
-            _context.ECO_CorreoDestinatarios.Add(correoDestinatario);
+            _context.ECO_CorreosDestinatarios.Add(correoDestinatario);
         }
     }
 }

@@ -1,11 +1,24 @@
 using ECO.Api.EnvioCorreos.Middlewares;
+using ECO.Aplicacion.CasosUso.Implementaciones;
+using ECO.Aplicacion.CasosUso.Interfaces;
 using ECO.Aplicacion.Servicios.Implementaciones;
 using ECO.Aplicacion.Servicios.Interfaces;
 using ECO.Aplicacion.ServiciosExternos;
+using ECO.Aplicacion.ServiciosExternos.config;
+using ECO.Aplicacion.ServiciosExternos.Mapeo;
 using ECO.DataAccess;
 using ECO.Dominio.Repositorio;
+using ECO.Dominio.Repositorio.UnidadTrabajo;
+using ECO.Dominio.Servicios.Implementaciones;
+using ECO.Dominio.Servicios.Interfaces;
+using ECO.Dtos.AppSettings;
 using ECO.Infraestructura.Aplicacion.ServiciosExternos;
+using ECO.Infraestructura.Aplicacion.ServiciosExternos.Config;
 using ECO.Infraestructura.Dominio.Repositorio;
+using ECO.Infraestructura.Dominio.Repositorio.UnidadTrabajo;
+using ECO.Infraestructura.Mapeo;
+using Hangfire;
+using Hangfire.MySql;
 using log4net;
 using log4net.Config;
 using Microsoft.EntityFrameworkCore;
@@ -18,29 +31,82 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ICorreoRepositorio, CorreoRepositorio>();
-builder.Services.AddScoped<ICorreoDestinatarioRepositorio, CorreoDestinatarioRepositorio>();
-builder.Services.AddScoped<ICorreoAdjuntoRepositorio, CorreoAdjuntoRepositorio>();
-builder.Services.AddScoped<IColaSolicitudRepositorio, ColaSolicitudRepositorio>();
-
-builder.Services.AddScoped<IEnvioCorreoServicio, EnvioCorreoServicio>();
-builder.Services.AddScoped<IApiResponse, ApiResponse>();
-
 // Configuración de log4net
 var logRepository = LogManager.GetRepository(System.Reflection.Assembly.GetEntryAssembly());
 XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 builder.Services.AddLogging(loggingBuilder => {loggingBuilder.AddLog4Net();});
 
 
+//Mapperly
+builder.Services.AddSingleton<IMapperPerfiles, MapperPerfiles>();
+
+builder.Services.AddScoped<ICorreoRepositorio, CorreoRepositorio>();
+builder.Services.AddScoped<ICorreoServicio, CorreoServicio>();
+
+builder.Services.AddScoped<ICorreoDestinatarioRepositorio, CorreoDestinatarioRepositorio>();
+builder.Services.AddScoped<ICorreoAdjuntoRepositorio, CorreoAdjuntoRepositorio>();
+builder.Services.AddScoped<ICorreoEmlRepositorio, CorreoEmlRepositorio>();
+
+builder.Services.AddScoped<IColaSolicitudRepositorio, ColaSolicitudRepositorio>();
+builder.Services.AddScoped<IColaSolicitudServicio, ColaSolicitudServicio>();
+builder.Services.AddScoped<IColaSolicitudValidador, ColaSolicitudValidador>();
+builder.Services.AddScoped<IUnidadDeTrabajo, UnidadDeTrabajoEF>();
+
+//Servicio que obtiene el UsuarioId del Token
+builder.Services.AddScoped<IUsuarioContextoServicio, UsuarioContextoServicio>();
+builder.Services.AddScoped(typeof(IEntidadValidador<>), typeof(EntidadValidador<>));
+builder.Services.AddSingleton<ISerializadorJsonServicio, SerializadorJsonServicio>();
+
+builder.Services.AddScoped<IProcesadorTransacciones, ProcesadorTransacciones>();
+
+builder.Services.AddScoped<IEnvioCorreoServicio, EnvioCorreoServicio>();
+builder.Services.AddScoped<IApiResponse, ApiResponse>();
+
+builder.Services.AddSingleton<IConfiguracionesTrabajosColas, ConfiguracionesTrabajosColas>();
+builder.Services.AddSingleton<IConfiguracionesTrazabilidadCorreo, ConfiguracionesTrazabilidadCorreo>();
+
+#region REG_Servicios de configuraciones Appsettings
+
+builder.Services.Configure<TrabajosColasSettings>(builder.Configuration.GetSection("TrabajosColas"));
+builder.Services.AddSingleton<IConfiguracionesTrabajosColas, ConfiguracionesTrabajosColas>();
+
+builder.Services.Configure<TrazabilidadCorreoSettings>(builder.Configuration.GetSection("NivelTrazabilidadCorreo"));
+builder.Services.AddSingleton<IConfiguracionesTrazabilidadCorreo, ConfiguracionesTrazabilidadCorreo>();
+
+#endregion
+
 builder.Services.AddDbContext<AppDbContext>
     (opciones => opciones
     .UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    //ServerVersion.Parse("8.0.39-mysql")
+    //ServerVersion.Parse("8.0.39-mysql")TrazabilidadCorreoSettings
     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
 
 
+builder.Services.AddHangfire(opciones =>
+{
+    opciones.UseStorage(
+        new MySqlStorage(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            new MySqlStorageOptions { TablesPrefix = "XHAF_ECO_" }));
+});
+
+//Necesario para correr el background job server
+builder.Services.AddHangfireServer(opciones => { opciones.ServerName = "MSEmpresasServer"; });
+
+
 var app = builder.Build();
+
+
+//Dashboard para ver los jobs en el navegador
+app.UseHangfireDashboard("/hangfire");
+
+
+//Configuracion para la tarea Job en segundo plano que rastrea las solicitudes pendientes de procesar.
+var configuracionTrabajosColas = app.Services.GetRequiredService<IConfiguracionesTrabajosColas>();
+RecurringJob.AddOrUpdate<IColaSolicitudServicio>("procesador_solicitudes", x => x.ProcesarColaSolicitudesAsync(),
+    configuracionTrabajosColas.ObtenerProcesarColaSolicitudesCron());
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

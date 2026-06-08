@@ -26,12 +26,12 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IUnidadDeTrabajo _unidadDeTrabajo;
         private readonly IProcesadorTransacciones _procesadorTransacciones;
         private readonly ISerializadorJsonServicio _serializadorJsonServicio;
-        private readonly IJobEncoladorServicio _jobEncoladorServicio;
+        private readonly IUsuarioContextoServicio _usuarioContextoServicio;
 
         private readonly IConfiguracionesTrazabilidadCorreo _configuracionesTrazabilidadCorreo;
 
 
-        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IJobEncoladorServicio jobEncoladorServicio, IConfiguracionesTrazabilidadCorreo configuracionesTrazabilidadCorreo)
+        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IConfiguracionesTrazabilidadCorreo configuracionesTrazabilidadCorreo, IUsuarioContextoServicio usuarioContextoServicio)
         {
             _correoRepositorio = correoRepositorio;
             _correoDestinatarioRepositorio = correoDestinatarioRepositorio;
@@ -42,8 +42,8 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             _unidadDeTrabajo = unidadDeTrabajo;
             _procesadorTransacciones = procesadorTransacciones;
             _serializadorJsonServicio = serializadorJsonServicio;
-            _jobEncoladorServicio = jobEncoladorServicio;
             _configuracionesTrazabilidadCorreo = configuracionesTrazabilidadCorreo;
+            _usuarioContextoServicio = usuarioContextoServicio;
         }
 
         public async Task<ApiResponse<int>> CrearAsync(DatosCorreoRequest datosCorreoRequest)
@@ -55,7 +55,8 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 //Creamos ECO_Correo
                 var correo = _mapper.DatoCorreoRequestACorreo(datosCorreoRequest);
                 correo.Estado = EstadoCorreo.Pendiente;
-                
+                correo.EmpresaId = _usuarioContextoServicio.ObtenerEmpresaIdToken();
+
                 _correoRepositorio.MarcarCrear(correo);
                 await _unidadDeTrabajo.GuardarCambiosAsync();
                 id = correo.Id;
@@ -63,13 +64,17 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 if (_configuracionesTrazabilidadCorreo.ObtenerGuardarDetalleCorreo() || 
                 datosCorreoRequest.Acciones.GuardarDetalleCorreo)
                 {
-                    //Guardar en ECO_CorreoDestinatarios
+                    //Creamos ECO_CorreoDestinatarios
+                    CrearDestinatarios(id, datosCorreoRequest.Destinatarios, TipoDestinatario.Para);
+                    CrearDestinatarios(id, datosCorreoRequest.CC, TipoDestinatario.CC);
+                    CrearDestinatarios(id, datosCorreoRequest.CCO, TipoDestinatario.CCO);
                 }
 
                 if (_configuracionesTrazabilidadCorreo.ObtenerGuardarAdjuntosCorreo() || 
                 datosCorreoRequest.Acciones.GuardarAdjuntosCorreo)
                 {
-                    //Gaurdar en ECO_CorreoAdjuntos
+                    //Creamos ECO_CorreoAdjuntos
+                    CrearAdjuntos(id, datosCorreoRequest.ArchivosAdjuntos);
                 }
 
                 var guardarEmlCorreo =
@@ -101,6 +106,37 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             };
             _colaSolicitudRepositorio.MarcarCrear(solicitud);
             return solicitud;
+        }
+
+        private void CrearDestinatarios(int correoId,List<string> destinatarios, TipoDestinatario tipoDestinatario) 
+        {
+            foreach (var destinatario in destinatarios)
+            {
+                var correoDestinatario = new ECO_CorreoDestinatario();
+                correoDestinatario.CorreoId = correoId;
+                correoDestinatario.Destinatario = destinatario;
+                correoDestinatario.Tipo = tipoDestinatario;
+
+                _correoDestinatarioRepositorio.MarcarCrear(correoDestinatario);
+            }
+        }
+
+        private void CrearAdjuntos(int correoId, List<ArchivoAdjuntoDto> adjuntosB64) 
+        {
+            foreach (var adjunto in adjuntosB64)
+            {
+                var bytes = Convert.FromBase64String(adjunto.Contenido);
+
+                var correoAdjunto = new ECO_CorreoAdjunto();
+                correoAdjunto.CorreoId = correoId;
+                correoAdjunto.Nombre = adjunto.Nombre;
+                correoAdjunto.Extension = adjunto.Extension;
+                correoAdjunto.TamanoBytes = bytes.Length;
+                correoAdjunto.ContenidoArchivo = bytes;
+                correoAdjunto.TipoContenido = TiposMime.ObtenerTipoMime(adjunto.Extension);
+
+                _correoAdjuntoRepositorio.MarcarCrear(correoAdjunto);
+            }
         }
     }
 }
