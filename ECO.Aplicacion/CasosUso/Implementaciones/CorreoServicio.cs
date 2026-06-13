@@ -50,6 +50,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         {
             var id = 0;
             var cola = new ECO_ColaSolicitud();
+            var trazabilidadCorreo = _appSettings.ObtenerTrazabilidadCorreoSettings();
             await _procesadorTransacciones.EjecutarEnTransaccionAsync(async () =>
             {
                 //Creamos ECO_Correo
@@ -65,7 +66,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 var usuarioId = correo.UsuarioCreadorId;
 
                 //Creamos ECO_CorreoDestinatarios
-                if (_appSettings.ObtenerGuardarDetalleCorreo() || 
+                if (trazabilidadCorreo.GuardarDetalleCorreo || 
                 datosCorreoRequest.Acciones.GuardarDetalleCorreo)
                 {
                     CrearDestinatarios(id, datosCorreoRequest.Destinatarios, TipoDestinatario.Para, usuarioId);
@@ -74,12 +75,12 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 }
 
                 //Creamos ECO_CorreoAdjuntos
-                if (_appSettings.ObtenerGuardarAdjuntosCorreo() || 
+                if (trazabilidadCorreo.GuardarAdjuntosCorreo || 
                 datosCorreoRequest.Acciones.GuardarAdjuntosCorreo)
                     CrearAdjuntos(id, datosCorreoRequest.ArchivosAdjuntos, usuarioId);
 
                 datosCorreoRequest.Acciones.GuardarEmlCorreo =
-                    _appSettings.ObtenerGuardarEmlCorreo() ||
+                    trazabilidadCorreo.GuardarEmlCorreo ||
                     datosCorreoRequest.Acciones.GuardarEmlCorreo;
 
 

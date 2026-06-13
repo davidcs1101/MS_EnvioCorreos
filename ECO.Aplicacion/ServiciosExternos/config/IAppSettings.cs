@@ -1,29 +1,16 @@
-﻿namespace ECO.Aplicacion.ServiciosExternos.config
+﻿using ECO.Dtos.AppSettings;
+
+namespace ECO.Aplicacion.ServiciosExternos.config
 {
     public interface IAppSettings
     {
         //TrabajosColas
-        int ObtenerCantidadIntentosPorRegistroEnCola();
-        string ObtenerProcesarColaSolicitudesCron();
-        int ObtenerCantidadRegistrosProcesarIteracion();
-        string ObtenerUsuarioIntegracion();
-        string ObtenerClaveIntegracion();
-
+        TrabajosColasSettings ObtenerTrabajosColasSettings();
 
         //NivelTrazabilidadCorreo
-        bool ObtenerGuardarDetalleCorreo();
-        bool ObtenerGuardarAdjuntosCorreo();
-        bool ObtenerGuardarEmlCorreo();
-
+        TrazabilidadCorreoSettings ObtenerTrazabilidadCorreoSettings();
 
         //ConfiguracionCorreo
-        string ObtenerUsuarioCorreo();
-        string ObtenerClaveCorreo();
-        string ObtenerHostCorreo();
-        int ObtenerPuertoCorreo();
-        bool ObtenerUsaSslCorreo();
-        bool ObtenerUsaCredencialPorDefectoCorreo();
-        string ObtenerCorreoRespuesta();
-
+        ConfiguracionCorreoSettings ObtenerConfiguracionCorreoSettings();
     }
 }

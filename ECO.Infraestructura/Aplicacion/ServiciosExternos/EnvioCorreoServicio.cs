@@ -28,14 +28,15 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
         public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
+            var settings = _appSettings.ObtenerConfiguracionCorreoSettings();
             // Obtener la configuración del correo desde appsettings.json o una fuente similar
-            var usuario = _appSettings.ObtenerUsuarioCorreo();
-            var clave = _appSettings.ObtenerClaveCorreo();
-            var host = _appSettings.ObtenerHostCorreo();
-            var puerto = _appSettings.ObtenerPuertoCorreo();
-            var usaSsl = _appSettings.ObtenerUsaSslCorreo();
-            var usaCredencialPorDefecto = _appSettings.ObtenerUsaCredencialPorDefectoCorreo();
-            var correoRespuesta = _appSettings.ObtenerCorreoRespuesta();
+            var usuario = settings.Usuario;
+            var clave = settings.Clave;
+            var host = settings.Host;
+            var puerto = settings.Puerto;
+            var usaSsl = settings.UsaSsl;
+            var usaCredencialPorDefecto = settings.UsaCredencialPorDefecto;
+            var correoRespuesta = settings.CorreoRespuesta;
             
             if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(clave) ||
                 string.IsNullOrWhiteSpace(host) || puerto == 0 || string.IsNullOrWhiteSpace(correoRespuesta))

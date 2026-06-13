@@ -126,7 +126,7 @@ app.UseHangfireDashboard("/hangfire");
 //Configuracion para la tarea Job en segundo plano que rastrea las solicitudes pendientes de procesar.
 var configuracionTrabajosColas = app.Services.GetRequiredService<IAppSettings>();
 RecurringJob.AddOrUpdate<IColaSolicitudServicio>("procesador_solicitudes", x => x.ProcesarColaSolicitudesAsync(),
-    configuracionTrabajosColas.ObtenerProcesarColaSolicitudesCron());
+    configuracionTrabajosColas.ObtenerTrabajosColasSettings().ProcesarColaSolicitudesCron);
 
 
 // Configure the HTTP request pipeline.

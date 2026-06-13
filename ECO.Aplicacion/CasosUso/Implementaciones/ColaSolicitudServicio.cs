@@ -37,7 +37,10 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 
         public async Task ProcesarColaSolicitudesAsync()
         {
-            var pendientes = _colaSolicitudRepositorio.Listar().Where(c => c.Estado == EstadoCola.Pendiente).OrderBy(c => c.Id).Take(30).ToList();
+            var cantidadRegistrosProcesar = _appSettings.ObtenerTrabajosColasSettings().CantidadRegistrosProcesarIteracion;
+            var pendientes = _colaSolicitudRepositorio.Listar().
+                Where(c => c.Estado == EstadoCola.Pendiente).OrderBy(c => c.Id)
+                .Take(cantidadRegistrosProcesar).ToList();
 
             foreach (var solicitud in pendientes)
             {
@@ -48,7 +51,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         public async Task ProcesarPorColaSolicitudIdAsync(int id, bool validarEstadoPendiente = false)
         {
             await using var transaccion = await _unidadDeTrabajo.IniciarTransaccionAsync();
-
+            var cantidadIntentos = _appSettings.ObtenerTrabajosColasSettings().CantidadIntentosPorRegistroEnCola;
             var solicitudExiste = await _colaSolicitudRepositorio.ObtenerPorIdAsync(id);
             _colaSolicitudValidador.ValidarDatoNoEncontrado(solicitudExiste, Textos.ColasSolicitudes.MENSAJE_COLASOLICITUD_NO_EXISTE_ID);
 
@@ -81,7 +84,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             catch (Exception ex)
             {
                 solicitudExiste.Intentos++;
-                solicitudExiste.Estado = solicitudExiste.Intentos >= _appSettings.ObtenerCantidadIntentosPorRegistroEnCola() ? EstadoCola.Fallido : EstadoCola.Pendiente;
+                solicitudExiste.Estado = solicitudExiste.Intentos >= cantidadIntentos ? EstadoCola.Fallido : EstadoCola.Pendiente;
                 solicitudExiste.ErrorMensaje = ex.Message;
                 Logs.EscribirLog("e", $"{Textos.ColasSolicitudes.MENSAJE_COLASOLICITUD_ERROR_PROCESO} : {solicitudExiste.Id}", ex);
             }

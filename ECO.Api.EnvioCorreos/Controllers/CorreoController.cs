@@ -30,5 +30,15 @@ namespace ECO.Api.EnvioCorreos.Controllers
         {
             return await _correoServicio.CrearAsync(datosCorreoEmpresaRequest);
         }
+
+
+        //AUN FALTA AGREGARLO AL GATEWAY
+        [HttpGet("obtenerPorId")]
+        [Authorize(Policy = "ConsultarCorreoEmpresa")]
+        public async Task<ActionResult<ApiResponse<int?>>> ObtenerPorId(int id)
+        {
+            return new ApiResponse<int?> { Data = id };
+            //return await _listaServicio.ObtenerPorIdAsync(id);
+        }
     }
 }
