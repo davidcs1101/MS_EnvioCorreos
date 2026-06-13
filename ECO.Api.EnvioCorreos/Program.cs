@@ -86,16 +86,12 @@ builder.Services.AddScoped<IProcesadorTransacciones, ProcesadorTransacciones>();
 builder.Services.AddScoped<IEnvioCorreoServicio, EnvioCorreoServicio>();
 builder.Services.AddScoped<IApiResponse, ApiResponse>();
 
-builder.Services.AddSingleton<IConfiguracionesTrabajosColas, ConfiguracionesTrabajosColas>();
-builder.Services.AddSingleton<IConfiguracionesTrazabilidadCorreo, ConfiguracionesTrazabilidadCorreo>();
-
 #region REG_Servicios de configuraciones Appsettings
 
 builder.Services.Configure<TrabajosColasSettings>(builder.Configuration.GetSection("TrabajosColas"));
-builder.Services.AddSingleton<IConfiguracionesTrabajosColas, ConfiguracionesTrabajosColas>();
-
 builder.Services.Configure<TrazabilidadCorreoSettings>(builder.Configuration.GetSection("NivelTrazabilidadCorreo"));
-builder.Services.AddSingleton<IConfiguracionesTrazabilidadCorreo, ConfiguracionesTrazabilidadCorreo>();
+builder.Services.Configure<ConfiguracionCorreoSettings>(builder.Configuration.GetSection("ConfiguracionCorreo"));
+builder.Services.AddSingleton<IAppSettings, AppSettings>();
 
 #endregion
 
@@ -128,7 +124,7 @@ app.UseHangfireDashboard("/hangfire");
 
 
 //Configuracion para la tarea Job en segundo plano que rastrea las solicitudes pendientes de procesar.
-var configuracionTrabajosColas = app.Services.GetRequiredService<IConfiguracionesTrabajosColas>();
+var configuracionTrabajosColas = app.Services.GetRequiredService<IAppSettings>();
 RecurringJob.AddOrUpdate<IColaSolicitudServicio>("procesador_solicitudes", x => x.ProcesarColaSolicitudesAsync(),
     configuracionTrabajosColas.ObtenerProcesarColaSolicitudesCron());
 

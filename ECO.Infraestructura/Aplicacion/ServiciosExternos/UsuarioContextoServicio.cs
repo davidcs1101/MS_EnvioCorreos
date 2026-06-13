@@ -27,7 +27,9 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
         {
             // Obtener el 'EmpresaId' desde el token JWT en el contexto HTTP
             var empresaIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("EmpresaId")?.Value;
-            return Convert.ToInt32(empresaIdClaim);
+            return empresaIdClaim != null 
+                ? Convert.ToInt32(empresaIdClaim) 
+                : (int?)null;
         }
     }
 }

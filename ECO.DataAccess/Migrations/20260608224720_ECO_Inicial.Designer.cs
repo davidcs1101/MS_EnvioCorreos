@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECO.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260608033932_ECO_Inicial")]
+    [Migration("20260608224720_ECO_Inicial")]
     partial class ECO_Inicial
     {
         /// <inheritdoc />
@@ -119,6 +119,9 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("datetime")
                         .HasComment("Fecha y hora en que el correo fue enviado exitosamente.");
 
+                    b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Estado");
@@ -167,6 +170,9 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("varchar(150)")
                         .HasComment("Tipo MIME del archivo adjunto.");
 
+                    b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CorreoId");
@@ -196,6 +202,9 @@ namespace ECO.DataAccess.Migrations
                     b.Property<int>("Tipo")
                         .HasColumnType("int")
                         .HasComment("Tipo de destinatario (Para = 0, CC = 1, CCO = 2).");
+
+                    b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -232,6 +241,9 @@ namespace ECO.DataAccess.Migrations
 
                     b.Property<long>("TamanoBytes")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

@@ -16,6 +16,5 @@ namespace ECO.Dtos
         public List<ArchivoAdjuntoDto> ArchivosAdjuntos { get; set; } = new List<ArchivoAdjuntoDto>();
         public AccionesDto Acciones { get; set; } = new AccionesDto();
         public int CorreoId { get; set; }
-        public bool GuardarEmlCorreo { get; set; }
     }
 }

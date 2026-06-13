@@ -17,11 +17,18 @@ namespace ECO.Api.EnvioCorreos.Controllers
             _correoServicio = correoServicio;
         }
 
-        [HttpPost("enviarCorreo")]
+        [HttpPost("enviarCorreo")]  
         [Authorize]
-        public async Task<ActionResult<ApiResponse<int>>> EnviarCorreo(DatosCorreoRequest datosCorreoDto) 
+        public async Task<ActionResult<ApiResponse<int>>> EnviarCorreo(DatosCorreoRequest datosCorreoRequest) 
         {
-            return await _correoServicio.CrearAsync(datosCorreoDto);
+            return await _correoServicio.CrearAsync(datosCorreoRequest);
+        }
+
+        [HttpPost("enviarCorreoEmpresa")]
+        [Authorize(Policy = "EnviarCorreoEmpresa")]
+        public async Task<ActionResult<ApiResponse<int>>> EnviarCorreoEmpresa(DatosCorreoEmpresaRequest datosCorreoEmpresaRequest)
+        {
+            return await _correoServicio.CrearAsync(datosCorreoEmpresaRequest);
         }
     }
 }

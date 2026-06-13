@@ -13,9 +13,11 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             _context = context;
         }
 
-        public void MarcarCrear(ECO_CorreoEml correoEml)
+        public async Task<int> CrearAsync(ECO_CorreoEml correoEml)
         {
             _context.ECO_CorreosEml.Add(correoEml);
+            await _context.SaveChangesAsync();
+            return correoEml.Id;
         }
     }
 }

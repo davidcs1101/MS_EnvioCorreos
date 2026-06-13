@@ -1,71 +1,76 @@
-﻿using System.Net.Mail;
-using System.Net;
-using Microsoft.Extensions.Configuration;
-using ECO.Dtos;
-using Utilidades;
-using ECO.Aplicacion.Servicios.Interfaces;
+﻿using ECO.Aplicacion.Servicios.Interfaces;
 using ECO.Aplicacion.ServiciosExternos;
+using ECO.Aplicacion.ServiciosExternos.config;
+using ECO.Dominio.Entidades;
+using ECO.Dominio.Enumeraciones;
+using ECO.Dominio.Repositorio;
+using ECO.Dtos;
+using Microsoft.Extensions.Configuration;
+using MimeKit;
+using MimeKit.Utils;
+using System.Net;
+using System.Net.Mail;
+using Utilidades;
 
 namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
 {
     public class EnvioCorreoServicio : IEnvioCorreoServicio
     {
-        private readonly IConfiguration _configuracion;
+        private readonly IAppSettings _appSettings;
         private readonly IApiResponse _apiResponse;
 
-        public EnvioCorreoServicio(IConfiguration configuration, IApiResponse apiResponse)
+        public EnvioCorreoServicio(IAppSettings appSettings, IApiResponse apiResponse)
         {
-            _configuracion = configuration;
+            _appSettings = appSettings;
             _apiResponse = apiResponse;
         }
 
-        public async Task<ApiResponse<string>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
+        public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             // Obtener la configuración del correo desde appsettings.json o una fuente similar
-            var configuracion = _configuracion.GetSection("ConfiguracionCorreo").GetChildren();
-            var usuario = configuracion.Where(x => x.Key == "Usuario").FirstOrDefault()?.Value;
-            var clave = configuracion.Where(x => x.Key == "Clave").FirstOrDefault()?.Value;
-            var host = configuracion.Where(x => x.Key == "Host").FirstOrDefault()?.Value;
-            var puerto = configuracion.Where(x => x.Key == "Puerto").FirstOrDefault()?.Value;
-            var usaSsl = configuracion.Where(x => x.Key == "UsaSsl").FirstOrDefault()?.Value;
-            var usaCredencialPorDefecto = configuracion.Where(x => x.Key == "UsaCredencialPorDefecto").FirstOrDefault()?.Value;
-            var CorreoRespuesta = configuracion.Where(x => x.Key == "CorreoRespuesta").FirstOrDefault()?.Value;
-
-
-            if (
-                string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(clave) ||
-                string.IsNullOrWhiteSpace(host) || string.IsNullOrWhiteSpace(puerto) ||
-                string.IsNullOrWhiteSpace(usaSsl) || string.IsNullOrWhiteSpace(usaCredencialPorDefecto) ||
-                string.IsNullOrWhiteSpace(CorreoRespuesta)
-               )
+            var usuario = _appSettings.ObtenerUsuarioCorreo();
+            var clave = _appSettings.ObtenerClaveCorreo();
+            var host = _appSettings.ObtenerHostCorreo();
+            var puerto = _appSettings.ObtenerPuertoCorreo();
+            var usaSsl = _appSettings.ObtenerUsaSslCorreo();
+            var usaCredencialPorDefecto = _appSettings.ObtenerUsaCredencialPorDefectoCorreo();
+            var correoRespuesta = _appSettings.ObtenerCorreoRespuesta();
+            
+            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(clave) ||
+                string.IsNullOrWhiteSpace(host) || puerto == 0 || string.IsNullOrWhiteSpace(correoRespuesta))
             {
                 Logs.EscribirLog("e", Textos.Generales.MENSAJE_CORREO_CONFIGURACION_ERROR);
-                return new ApiResponse<string> { Correcto = false, Mensaje = Textos.Generales.MENSAJE_CORREO_CONFIGURACION_ERROR };
+                return _apiResponse.CrearRespuesta<byte[]?>(false, Textos.Generales.MENSAJE_CORREO_CONFIGURACION_ERROR, null);
             }
 
-            CorreoRespuesta = string.IsNullOrWhiteSpace(datosCorreoDto.CorreoRespuesta) ? CorreoRespuesta : datosCorreoDto.CorreoRespuesta;
+            correoRespuesta = string.IsNullOrWhiteSpace(datosCorreoDto.CorreoRespuesta) ? correoRespuesta : datosCorreoDto.CorreoRespuesta;
 
             using (var mensaje = new MailMessage())
             {
-                mensaje.From = new MailAddress(usuario, CorreoRespuesta);
+                mensaje.From = new MailAddress(usuario, correoRespuesta);
                 AgregarDestinatarios(mensaje, datosCorreoDto);
                 mensaje.Subject = datosCorreoDto.Asunto;
                 mensaje.Body = datosCorreoDto.Cuerpo;
                 mensaje.IsBodyHtml = datosCorreoDto.EsCuerpoHtml;
                 AgregarAdjuntos(mensaje, datosCorreoDto.ArchivosAdjuntos);
 
-                using (var smtpClient = new SmtpClient(host, Convert.ToInt32(puerto)))
+                byte[] eml = null;
+                if (datosCorreoDto.Acciones.GuardarEmlCorreo)
+                    eml = GenerarEml(datosCorreoDto, usuario, correoRespuesta);
+
+                using (var smtpClient = new SmtpClient(host, puerto))
                 {
                     smtpClient.Credentials = new NetworkCredential(usuario, clave);
-                    smtpClient.EnableSsl = usaSsl.ToUpper() == "S" ? true : false;
-                    smtpClient.UseDefaultCredentials = usaCredencialPorDefecto.ToUpper() == "S" ? true : false;
+                    smtpClient.EnableSsl = usaSsl;
+                    smtpClient.UseDefaultCredentials = usaCredencialPorDefecto;
 
                     await smtpClient.SendMailAsync(mensaje);
                     Logs.EscribirLog("i", Textos.Generales.MENSAJE_CORREO_ENVIADO_OK);
-
-                    return _apiResponse.CrearRespuesta(true, Textos.Generales.MENSAJE_CORREO_ENVIADO_OK,"");
                 }
+
+                return _apiResponse.CrearRespuesta<byte[]?>(true,Textos.Generales.MENSAJE_CORREO_ENVIADO_OK, eml);
+
             }
         }
 
@@ -80,18 +85,78 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             foreach (var item in datosCorreoDto.CCO)
                 mensaje.Bcc.Add(item);
         }
-
         private void AgregarAdjuntos(MailMessage mensaje, IEnumerable<ArchivoAdjuntoDto> archivosAdjuntos)
         {
             foreach (var adjuntoB64 in archivosAdjuntos)
             {
                 var adjunto = Convert.FromBase64String(adjuntoB64.Contenido);
                 var memoryStream = new MemoryStream(adjunto);
-                var attachment = new Attachment(memoryStream, $"{adjuntoB64.Nombre}.{adjuntoB64.Extension}", "application/octet-stream");
+                var attachment = new Attachment(memoryStream, $"{adjuntoB64.Nombre}{adjuntoB64.Extension}", "application/octet-stream");
                 mensaje.Attachments.Add(attachment);
             }
         }
+        private byte[] GenerarEml(DatosCorreoDto datosCorreoDto, string usuario, string correoRespuesta)
+        {
+            var mensaje = new MimeMessage();
+
+            // Dirección real del remitente SMTP
+            mensaje.From.Add(new MailboxAddress(correoRespuesta, usuario));
+
+            // Reply-To únicamente si viene informado
+            if (!string.IsNullOrWhiteSpace(datosCorreoDto.CorreoRespuesta))
+            {
+                mensaje.ReplyTo.Add(
+                    MailboxAddress.Parse(datosCorreoDto.CorreoRespuesta));
+            }
+
+            foreach (var destinatario in datosCorreoDto.Destinatarios)
+                mensaje.To.Add(MailboxAddress.Parse(destinatario));
+
+            foreach (var destinatario in datosCorreoDto.CC)
+                mensaje.Cc.Add(MailboxAddress.Parse(destinatario));
+
+            foreach (var destinatario in datosCorreoDto.CCO)
+                mensaje.Bcc.Add(MailboxAddress.Parse(destinatario));
+
+            mensaje.Subject = datosCorreoDto.Asunto;
+
+            var bodyBuilder = new BodyBuilder();
+
+            if (datosCorreoDto.EsCuerpoHtml)
+            {
+                bodyBuilder.HtmlBody = datosCorreoDto.Cuerpo;
+
+                // Opcional pero recomendable:
+                // genera versión texto plano automáticamente
+                //bodyBuilder.TextBody = MimeKit.Text.TextConverter
+                //    .ConvertToPlainText(datosCorreoDto.Cuerpo);
+            }
+            else
+            {
+                bodyBuilder.TextBody = datosCorreoDto.Cuerpo;
+            }
+
+            foreach (var adjunto in datosCorreoDto.ArchivosAdjuntos)
+            {
+                var bytes = Convert.FromBase64String(adjunto.Contenido);
+
+                var nombreArchivo = string.IsNullOrWhiteSpace(adjunto.Extension)
+                    ? adjunto.Nombre
+                    : $"{adjunto.Nombre}{adjunto.Extension}";
+
+                bodyBuilder.Attachments.Add(nombreArchivo, bytes);
+            }
+
+            mensaje.Date = DateTimeOffset.UtcNow;
+            mensaje.MessageId = MimeUtils.GenerateMessageId();
+
+            mensaje.Body = bodyBuilder.ToMessageBody();
+
+            using var stream = new MemoryStream();
+
+            mensaje.WriteTo(stream);
+
+            return stream.ToArray();
+        }
     }
-
-
 }

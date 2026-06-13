@@ -28,5 +28,11 @@ namespace ECO.Infraestructura.Dominio.Repositorio
         {
             return await _context.ECO_Correos.FindAsync(id);
         }
+
+        public async Task ModificarAsync(ECO_Correo correo)
+        {
+            _context.ECO_Correos.Update(correo);
+            await _context.SaveChangesAsync();
+        }
     }
 }

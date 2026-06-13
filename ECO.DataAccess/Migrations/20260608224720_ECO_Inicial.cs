@@ -56,6 +56,7 @@ namespace ECO.DataAccess.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     FechaEnvio = table.Column<DateTime>(type: "datetime", nullable: true, comment: "Fecha y hora en que el correo fue enviado exitosamente."),
                     EmpresaId = table.Column<int>(type: "int", nullable: true, comment: "Empresa desde la cual se solicitó el envío de correo"),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -79,6 +80,7 @@ namespace ECO.DataAccess.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TamanoBytes = table.Column<long>(type: "bigint", nullable: false, comment: "Tamaño del archivo en bytes."),
                     ContenidoArchivo = table.Column<byte[]>(type: "longblob", nullable: false, comment: "Contenido binario del archivo adjunto."),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -103,6 +105,7 @@ namespace ECO.DataAccess.Migrations
                     Destinatario = table.Column<string>(type: "varchar(150)", nullable: false, comment: "Correo electrónico destinatario.")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Tipo = table.Column<int>(type: "int", nullable: false, comment: "Tipo de destinatario (Para = 0, CC = 1, CCO = 2)."),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -128,6 +131,7 @@ namespace ECO.DataAccess.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TamanoBytes = table.Column<long>(type: "bigint", nullable: false),
                     ContenidoArchivo = table.Column<byte[]>(type: "longblob", nullable: false),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>

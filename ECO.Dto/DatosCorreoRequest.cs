@@ -36,5 +36,8 @@ namespace ECO.Dtos
         public List<ArchivoAdjuntoDto> ArchivosAdjuntos { get; set; } = new List<ArchivoAdjuntoDto>();
 
         public AccionesDto Acciones { get; set; } = new AccionesDto();
+
+        [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]
+        public int UsuarioCreadorId { get; set; }
     }
 }

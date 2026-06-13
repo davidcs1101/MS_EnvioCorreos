@@ -4,6 +4,6 @@ namespace ECO.Dominio.Repositorio
 {
     public interface ICorreoEmlRepositorio
     {
-        void MarcarCrear(ECO_CorreoEml correoEml);
+        Task<int> CrearAsync(ECO_CorreoEml correoEml);
     }
 }
