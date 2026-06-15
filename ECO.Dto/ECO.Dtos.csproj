@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Utilidades\Utilidades.csproj" />
+    <ProjectReference Include="..\ECO.Dominio\ECO.Dominio.csproj" />
   </ItemGroup>
 
 </Project>

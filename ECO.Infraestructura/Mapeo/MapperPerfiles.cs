@@ -8,7 +8,7 @@ namespace ECO.Infraestructura.Mapeo
     [Mapper]
     public partial class MapperPerfiles : IMapperPerfiles
     {
-        public partial DatosCorreoDto DatoCorreoRequestADatoCorreoDto(DatosCorreoRequest datoCorreoRequest);
-        public partial ECO_Correo DatoCorreoRequestACorreo(DatosCorreoRequest datoCorreoRequest);
+        public partial DatosCorreoRequest DatoCorreoRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
+        public partial ECO_Correo DatoCorreoRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
     }
 }

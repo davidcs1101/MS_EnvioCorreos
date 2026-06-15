@@ -3,7 +3,7 @@ using Utilidades;
 
 namespace ECO.Dtos
 {
-    public class DatosCorreoEmpresaRequest : DatosCorreoRequest
+    public class CorreoEmpresaCreacionRequest : CorreoCreacionRequest
     {
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]
         public int EmpresaId { get; set; }

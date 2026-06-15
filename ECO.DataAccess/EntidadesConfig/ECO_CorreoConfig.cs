@@ -50,9 +50,9 @@ namespace ECO.DataAccess.EntidadesConfig
                 .HasForeignKey(x => x.CorreoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.CorreosEml)
+            builder.HasOne(x => x.CorreoEml)
                 .WithOne(x => x.Correo)
-                .HasForeignKey(x => x.CorreoId)
+                .HasForeignKey<ECO_CorreoEml>(x => x.CorreoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(x => x.Estado);

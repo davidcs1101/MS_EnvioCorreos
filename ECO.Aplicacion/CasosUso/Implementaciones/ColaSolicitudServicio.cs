@@ -122,7 +122,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         {
             EstadoCorreo estado = EstadoCorreo.Enviado;
             string? mensaje = "";
-            var datosCorreoDto = _serializadorJsonServicio.Deserializar<DatosCorreoDto>(payload);
+            var datosCorreoDto = _serializadorJsonServicio.Deserializar<DatosCorreoRequest>(payload);
             int correoId = datosCorreoDto.CorreoId;
 
             try

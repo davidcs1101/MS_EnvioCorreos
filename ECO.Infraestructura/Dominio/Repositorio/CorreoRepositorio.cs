@@ -1,6 +1,7 @@
 ﻿using ECO.Dominio.Repositorio;
 using ECO.DataAccess;
 using ECO.Dominio.Entidades;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECO.Infraestructura.Dominio.Repositorio
 {
@@ -24,9 +25,18 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             _context.ECO_Correos.Update(correo);
         }
 
-        public async Task<ECO_Correo?> ObtenerPorIdAsync(int id) 
+        public async Task<ECO_Correo?> ObtenerPorIdAsync(int id)
         {
             return await _context.ECO_Correos.FindAsync(id);
+        }
+
+        public async Task<ECO_Correo?> ObtenerPorIdYEmpresaIdAsync(int id, int empresaId) 
+        {
+            return await _context.ECO_Correos
+                .Include(x => x.CorreosAdjuntos)
+                .Include(x => x.CorreosDestinatarios)
+                .Include(x => x.CorreoEml)
+                .FirstOrDefaultAsync(x => x.Id == id && x.EmpresaId == empresaId);
         }
 
         public async Task ModificarAsync(ECO_Correo correo)

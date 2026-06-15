@@ -12,8 +12,8 @@ namespace ECO.Dominio.Entidades
         public string? ErrorMensaje { get; set; }
         public DateTime? FechaEnvio { get; set; }
         public int? EmpresaId { get; set; }
-        public List<ECO_CorreoDestinatario> CorreosDestinatarios { get; set; } = new List<ECO_CorreoDestinatario>();
-        public List<ECO_CorreoAdjunto> CorreosAdjuntos { get; set; } = new List<ECO_CorreoAdjunto>();
-        public List<ECO_CorreoEml> CorreosEml { get; set; } = new List<ECO_CorreoEml>();
+        public List<ECO_CorreoDestinatario> CorreosDestinatarios { get; set; } = new();
+        public List<ECO_CorreoAdjunto> CorreosAdjuntos { get; set; } = new();
+        public ECO_CorreoEml? CorreoEml { get; set; }
     }
 }

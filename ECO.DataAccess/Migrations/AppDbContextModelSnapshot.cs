@@ -224,27 +224,31 @@ namespace ECO.DataAccess.Migrations
 
                     b.Property<byte[]>("ContenidoArchivo")
                         .IsRequired()
-                        .HasColumnType("longblob");
+                        .HasColumnType("longblob")
+                        .HasComment("Contenido binario del archivo EML");
 
                     b.Property<int>("CorreoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaCreado")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(250)")
+                        .HasComment("Nombre del archivo EML");
 
                     b.Property<long>("TamanoBytes")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasComment("Tamaño del archivo EML en bytes");
 
                     b.Property<int>("UsuarioCreadorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CorreoId");
+                    b.HasIndex("CorreoId")
+                        .IsUnique();
 
                     b.ToTable("ECO_CorreosEml");
                 });
@@ -274,8 +278,8 @@ namespace ECO.DataAccess.Migrations
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoEml", b =>
                 {
                     b.HasOne("ECO.Dominio.Entidades.ECO_Correo", "Correo")
-                        .WithMany("CorreosEml")
-                        .HasForeignKey("CorreoId")
+                        .WithOne("CorreoEml")
+                        .HasForeignKey("ECO.Dominio.Entidades.ECO_CorreoEml", "CorreoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -284,11 +288,11 @@ namespace ECO.DataAccess.Migrations
 
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_Correo", b =>
                 {
+                    b.Navigation("CorreoEml");
+
                     b.Navigation("CorreosAdjuntos");
 
                     b.Navigation("CorreosDestinatarios");
-
-                    b.Navigation("CorreosEml");
                 });
 #pragma warning restore 612, 618
         }

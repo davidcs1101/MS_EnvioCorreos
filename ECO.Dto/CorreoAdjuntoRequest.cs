@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECO.Dtos
 {
-    public class ArchivoAdjuntoDto
+    public class CorreoAdjuntoRequest
     {
         [Required(ErrorMessage = "El dato es obligatorio")]
         public string Nombre { get; set; } = null!;

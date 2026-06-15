@@ -25,7 +25,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             _apiResponse = apiResponse;
         }
 
-        public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
+        public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoRequest datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             var settings = _appSettings.ObtenerConfiguracionCorreoSettings();
@@ -75,7 +75,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             }
         }
 
-        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoDto datosCorreoDto)
+        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoRequest datosCorreoDto)
         {
             foreach (var item in datosCorreoDto.Destinatarios)
                 mensaje.To.Add(item);
@@ -86,7 +86,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             foreach (var item in datosCorreoDto.CCO)
                 mensaje.Bcc.Add(item);
         }
-        private void AgregarAdjuntos(MailMessage mensaje, IEnumerable<ArchivoAdjuntoDto> archivosAdjuntos)
+        private void AgregarAdjuntos(MailMessage mensaje, IEnumerable<CorreoAdjuntoRequest> archivosAdjuntos)
         {
             foreach (var adjuntoB64 in archivosAdjuntos)
             {
@@ -96,7 +96,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
                 mensaje.Attachments.Add(attachment);
             }
         }
-        private byte[] GenerarEml(DatosCorreoDto datosCorreoDto, string usuario, string correoRespuesta)
+        private byte[] GenerarEml(DatosCorreoRequest datosCorreoDto, string usuario, string correoRespuesta)
         {
             var mensaje = new MimeMessage();
 

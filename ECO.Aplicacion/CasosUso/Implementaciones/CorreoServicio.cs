@@ -1,14 +1,16 @@
 ﻿using ECO.Aplicacion.CasosUso.Interfaces;
-using ECO.Aplicacion.ServiciosExternos;
-using ECO.Aplicacion.ServiciosExternos.Mapeo;
 using ECO.Aplicacion.Servicios.Interfaces;
-using ECO.Dtos;
+using ECO.Aplicacion.ServiciosExternos;
+using ECO.Aplicacion.ServiciosExternos.config;
+using ECO.Aplicacion.ServiciosExternos.Mapeo;
+using ECO.Dominio.Entidades;
+using ECO.Dominio.Enumeraciones;
 using ECO.Dominio.Repositorio;
 using ECO.Dominio.Repositorio.UnidadTrabajo;
-using ECO.Dominio.Enumeraciones;
+using ECO.Dominio.Servicios.Interfaces;
+using ECO.Dtos;
+using System.Text;
 using Utilidades;
-using ECO.Aplicacion.ServiciosExternos.config;
-using ECO.Dominio.Entidades;
 
 
 namespace ECO.Aplicacion.CasosUso.Implementaciones
@@ -26,12 +28,13 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IUnidadDeTrabajo _unidadDeTrabajo;
         private readonly IProcesadorTransacciones _procesadorTransacciones;
         private readonly ISerializadorJsonServicio _serializadorJsonServicio;
+        private readonly IEntidadValidador<ECO_Correo> _correoValidadorServicio;
         //private readonly IUsuarioContextoServicio _usuarioContextoServicio;
 
         private readonly IAppSettings _appSettings;
 
 
-        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IUsuarioContextoServicio usuarioContextoServicio, IAppSettings appSettings)
+        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IUsuarioContextoServicio usuarioContextoServicio, IAppSettings appSettings, IEntidadValidador<ECO_Correo> correoValidadorServicio)
         {
             _correoRepositorio = correoRepositorio;
             _correoDestinatarioRepositorio = correoDestinatarioRepositorio;
@@ -43,10 +46,11 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             _procesadorTransacciones = procesadorTransacciones;
             _serializadorJsonServicio = serializadorJsonServicio;
             _appSettings = appSettings;
+            _correoValidadorServicio = correoValidadorServicio;
             //_usuarioContextoServicio = usuarioContextoServicio;
         }
 
-        public async Task<ApiResponse<int>> CrearAsync(DatosCorreoRequest datosCorreoRequest)
+        public async Task<ApiResponse<int>> CrearAsync(CorreoCreacionRequest datosCorreoRequest)
         {
             var id = 0;
             var cola = new ECO_ColaSolicitud();
@@ -57,7 +61,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 var correo = _mapper.DatoCorreoRequestACorreo(datosCorreoRequest);
                 correo.Estado = EstadoCorreo.Pendiente;
 
-                if (datosCorreoRequest is DatosCorreoEmpresaRequest empresaRequest)
+                if (datosCorreoRequest is CorreoEmpresaCreacionRequest empresaRequest)
                     correo.EmpresaId = empresaRequest.EmpresaId;
 
                 _correoRepositorio.MarcarCrear(correo);
@@ -95,7 +99,83 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             return _apiResponse.CrearRespuesta(true, Textos.Generales.MENSAJE_REGISTRO_CREADO, id);
         }
 
-        private ECO_ColaSolicitud AgregarColaSolicitud(DatosCorreoDto datoCorreoDto)
+        public async Task<ApiResponse<CorreoDto?>> ObtenerPorIdYEmpresaIdAsync(int id) 
+        {
+            var empresaId = 1;//Esto se debe obtener desde el token empresarial   
+            var correo = await _correoRepositorio.ObtenerPorIdYEmpresaIdAsync(id, empresaId);
+            _correoValidadorServicio.ValidarDatoNoEncontrado(correo, Textos.Correos.MENSAJE_CORREO_NO_EXISTE_ID);
+
+            //var correoDto = _mapper.CorreoACorreoDto(correo);
+            var correoDto = new CorreoDto()
+            {
+                Id = correo.Id,
+                Asunto = correo.Asunto,
+                Cuerpo = correo.Cuerpo,
+                EsCuerpoHtml = correo.EsCuerpoHtml,
+                CorreoRespuesta = correo.CorreoRespuesta,
+                Estado = correo.Estado,
+                NombreEstado = correo.Estado.ToString(),
+                ErrorMensaje = correo.ErrorMensaje,
+                FechaEnvio = correo.FechaEnvio,
+                EmpresaId = correo.EmpresaId,
+                UsuarioCreadorId = correo.UsuarioCreadorId,
+                FechaCreado = correo.FechaCreado,
+            };
+
+            var destinatarios = new List<CorreoDestinatarioDto>();
+            var adjuntos = new List<CorreoAdjuntoDto>();
+            var eml = new CorreoEmlDto();
+            
+            foreach (var destinatario in correo.CorreosDestinatarios)
+            {
+                var destinatarioDto = new CorreoDestinatarioDto()
+                {
+                    Destinatario = destinatario.Destinatario,
+                    Tipo = destinatario.Tipo,
+                    NombreTipo = destinatario.Tipo.ToString()
+                };
+                destinatarios.Add(destinatarioDto);
+            }
+            correoDto.CorreosDestinatarios = destinatarios;
+
+            foreach (var adjunto in correo.CorreosAdjuntos)
+            {
+                var adjuntoDto = new CorreoAdjuntoDto()
+                {
+                    Id = adjunto.Id,
+                    Nombre = adjunto.Nombre,
+                    Extension = adjunto.Extension,
+                    TipoContenido = adjunto.TipoContenido,
+                    TamanoBytes = adjunto.TamanoBytes,
+                    ContenidoArchivo = adjunto.ContenidoArchivo,
+                    ContenidoArchivoB64 = Convert.ToBase64String(adjunto.ContenidoArchivo)
+                };
+                adjuntos.Add(adjuntoDto);
+            }
+            correoDto.CorreosAdjuntos = adjuntos;
+
+            if (correo.CorreoEml != null)
+            {
+                eml = new CorreoEmlDto()
+                {
+                    Id = correo.CorreoEml.Id,
+                    Nombre = correo.CorreoEml.Nombre,
+                    TamanoBytes = correo.CorreoEml.TamanoBytes,
+                    ContenidoArchivo = correo.CorreoEml.ContenidoArchivo,
+                    ContenidoArchivoB64 = Convert.ToBase64String(correo.CorreoEml.ContenidoArchivo)
+                };
+            }
+            correoDto.CorreosEml = eml;
+
+            //var texto = Encoding.UTF8.GetString(correo.CorreoEml.ContenidoArchivo);
+            //Console.WriteLine(texto.Substring(0, 500));
+            //File.WriteAllBytes(@"C:\Temp\correo_desde_bd.eml",correo.CorreoEml.ContenidoArchivo);
+
+
+            return _apiResponse.CrearRespuesta<CorreoDto?>(true, "", correoDto);
+        }
+
+        private ECO_ColaSolicitud AgregarColaSolicitud(DatosCorreoRequest datoCorreoDto)
         {
             var solicitud = new ECO_ColaSolicitud
             {
@@ -122,7 +202,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             }
         }
 
-        private void CrearAdjuntos(int correoId, List<ArchivoAdjuntoDto> adjuntosB64, int usuarioCreadorId) 
+        private void CrearAdjuntos(int correoId, List<CorreoAdjuntoRequest> adjuntosB64, int usuarioCreadorId) 
         {
             foreach (var adjunto in adjuntosB64)
             {

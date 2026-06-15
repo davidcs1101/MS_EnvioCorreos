@@ -7,7 +7,7 @@ namespace ECO.Dominio.Repositorio
         void MarcarCrear(ECO_Correo correo);
         void MarcarModificar(ECO_Correo correo);
         Task<ECO_Correo?> ObtenerPorIdAsync(int id);
-
+        Task<ECO_Correo?> ObtenerPorIdYEmpresaIdAsync(int id, int empresaId);
         Task ModificarAsync(ECO_Correo correo);    
     }
 }

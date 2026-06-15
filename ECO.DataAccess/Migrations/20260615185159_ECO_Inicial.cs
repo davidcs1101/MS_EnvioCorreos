@@ -127,12 +127,12 @@ namespace ECO.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CorreoId = table.Column<int>(type: "int", nullable: false),
-                    Nombre = table.Column<string>(type: "longtext", nullable: false)
+                    Nombre = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Nombre del archivo EML")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    TamanoBytes = table.Column<long>(type: "bigint", nullable: false),
-                    ContenidoArchivo = table.Column<byte[]>(type: "longblob", nullable: false),
+                    TamanoBytes = table.Column<long>(type: "bigint", nullable: false, comment: "Tamaño del archivo EML en bytes"),
+                    ContenidoArchivo = table.Column<byte[]>(type: "longblob", nullable: false, comment: "Contenido binario del archivo EML"),
                     UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
-                    FechaCreado = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -194,7 +194,8 @@ namespace ECO.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ECO_CorreosEml_CorreoId",
                 table: "ECO_CorreosEml",
-                column: "CorreoId");
+                column: "CorreoId",
+                unique: true);
         }
 
         /// <inheritdoc />
