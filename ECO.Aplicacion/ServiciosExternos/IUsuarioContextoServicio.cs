@@ -3,6 +3,6 @@
     public interface IUsuarioContextoServicio
     {
         int ObtenerUsuarioIdToken();
-        int? ObtenerEmpresaIdToken();
+        int ObtenerEmpresaIdToken();
     }
 }

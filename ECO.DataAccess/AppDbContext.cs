@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ECO.Dominio.Entidades;
+﻿using ECO.Dominio.Entidades;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECO.DataAccess
 {
@@ -21,5 +21,6 @@ namespace ECO.DataAccess
         public DbSet<ECO_CorreoDestinatario> ECO_CorreosDestinatarios { get; set; }
         public DbSet<ECO_CorreoAdjunto> ECO_CorreosAdjuntos { get; set; }
         public DbSet<ECO_CorreoEml> ECO_CorreosEml { get; set; }
+        public DbSet<ECO_CorreoConfiguracion> ECO_CorreosConfiguraciones { get; set; }
     }
 }

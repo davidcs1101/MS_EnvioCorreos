@@ -6,6 +6,11 @@ namespace ECO.Dominio.Servicios.Implementaciones
 {
     public class ColaSolicitudValidador : IColaSolicitudValidador
     {
+        public void ValidarDatoYaExiste(ECO_ColaSolicitud? cola, string mensaje)
+        {
+            if (cola != null)
+                throw new DatoYaExisteException(mensaje);
+        }
         public void ValidarDatoNoEncontrado(ECO_ColaSolicitud? cola, string mensaje)
         {
             if (cola == null)

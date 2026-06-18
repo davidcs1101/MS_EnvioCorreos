@@ -10,5 +10,7 @@ namespace ECO.Infraestructura.Mapeo
     {
         public partial DatosCorreoRequest DatoCorreoRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
         public partial ECO_Correo DatoCorreoRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
+        public partial ECO_CorreoConfiguracion CorreoConfiguracionCreacionRequestACorreoConfiguracion(CorreoConfiguracionCreacionRequest correoConfiguracionCreacionRequest);
+        public partial CorreoConfiguracionDto CorreoConfiguracionACorreoConfiguracionDto(ECO_CorreoConfiguracion correoConfiguracion);
     }
 }

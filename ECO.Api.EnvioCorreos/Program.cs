@@ -11,6 +11,7 @@ using ECO.Dominio.Repositorio;
 using ECO.Dominio.Repositorio.UnidadTrabajo;
 using ECO.Dominio.Servicios.Implementaciones;
 using ECO.Dominio.Servicios.Interfaces;
+using ECO.Dtos;
 using ECO.Dtos.AppSettings;
 using ECO.Infraestructura.Aplicacion.ServiciosExternos;
 using ECO.Infraestructura.Aplicacion.ServiciosExternos.Config;
@@ -76,6 +77,9 @@ builder.Services.AddScoped<IColaSolicitudServicio, ColaSolicitudServicio>();
 builder.Services.AddScoped<IColaSolicitudValidador, ColaSolicitudValidador>();
 builder.Services.AddScoped<IUnidadDeTrabajo, UnidadDeTrabajoEF>();
 
+builder.Services.AddScoped<ICorreoConfiguracionRepositorio, CorreoConfiguracionRepositorio>();
+builder.Services.AddScoped<ICorreoConfiguracionServicio, CorreoConfiguracionServicio>();
+
 //Servicio que obtiene el UsuarioId del Token
 builder.Services.AddScoped<IUsuarioContextoServicio, UsuarioContextoServicio>();
 builder.Services.AddScoped(typeof(IEntidadValidador<>), typeof(EntidadValidador<>));
@@ -84,7 +88,7 @@ builder.Services.AddSingleton<ISerializadorJsonServicio, SerializadorJsonServici
 builder.Services.AddScoped<IProcesadorTransacciones, ProcesadorTransacciones>();
 
 builder.Services.AddScoped<IEnvioCorreoServicio, EnvioCorreoServicio>();
-builder.Services.AddScoped<IApiResponse, ApiResponse>();
+builder.Services.AddSingleton<IApiResponse, ApiResponse>();
 
 #region REG_Servicios de configuraciones Appsettings
 

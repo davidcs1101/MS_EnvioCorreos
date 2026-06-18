@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECO.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260615185159_ECO_Inicial")]
+    [Migration("20260618023037_ECO_Inicial")]
     partial class ECO_Inicial
     {
         /// <inheritdoc />
@@ -178,6 +178,80 @@ namespace ECO.DataAccess.Migrations
                     b.HasIndex("CorreoId");
 
                     b.ToTable("ECO_CorreosAdjuntos");
+                });
+
+            modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoConfiguracion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("tinyint(1)")
+                        .HasComment("Indica si la configuración se encuentra activa.");
+
+                    b.Property<string>("Clave")
+                        .IsRequired()
+                        .HasColumnType("varchar(500)")
+                        .HasComment("Clave o secreto utilizado para autenticación.");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasComment("Código del proceso de la empresa.");
+
+                    b.Property<string>("CorreoRespuesta")
+                        .IsRequired()
+                        .HasColumnType("varchar(150)")
+                        .HasComment("Nombre o correo mostrado como remitente de respuesta.");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)")
+                        .HasComment("Nombre descriptivo de la configuración de correo.");
+
+                    b.Property<int>("EmpresaId")
+                        .HasColumnType("int")
+                        .HasComment("Empresa propietaria de la configuración de correo electrónico.");
+
+                    b.Property<DateTime>("FechaCreado")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Host")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)")
+                        .HasComment("Servidor de correo.");
+
+                    b.Property<int>("Puerto")
+                        .HasColumnType("int")
+                        .HasComment("Puerto utilizado para la conexión");
+
+                    b.Property<bool>("UsaCredencialPorDefecto")
+                        .HasColumnType("tinyint(1)")
+                        .HasComment("Indica si se utilizan las credenciales predeterminadas del servidor.");
+
+                    b.Property<bool>("UsaSsl")
+                        .HasColumnType("tinyint(1)")
+                        .HasComment("Indica si la conexión utiliza SSL/TLS.");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("varchar(150)")
+                        .HasComment("Usuario o cuenta de correo utilizada para el envío.");
+
+                    b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpresaId");
+
+                    b.HasIndex("EmpresaId", "Codigo")
+                        .IsUnique();
+
+                    b.ToTable("ECO_CorreosConfiguraciones");
                 });
 
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoDestinatario", b =>

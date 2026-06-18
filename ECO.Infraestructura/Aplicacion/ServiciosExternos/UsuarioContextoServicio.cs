@@ -12,7 +12,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Int32 ObtenerUsuarioIdToken()
+        public int ObtenerUsuarioIdToken()
         {
             // Obtener el 'UsuarioId' desde el token JWT en el contexto HTTP
             var usuarioIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("UsuarioId")?.Value;
@@ -23,13 +23,15 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             return Convert.ToInt32(usuarioIdClaim);
         }
 
-        public Int32? ObtenerEmpresaIdToken()
+        public int ObtenerEmpresaIdToken()
         {
             // Obtener el 'EmpresaId' desde el token JWT en el contexto HTTP
             var empresaIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("EmpresaId")?.Value;
-            return empresaIdClaim != null 
-                ? Convert.ToInt32(empresaIdClaim) 
-                : (int?)null;
+
+            if (string.IsNullOrEmpty(empresaIdClaim))
+                throw new UnauthorizedAccessException("No se encontró la 'EmpresaId' en el token JWT.");
+
+            return Convert.ToInt32(empresaIdClaim);
         }
     }
 }

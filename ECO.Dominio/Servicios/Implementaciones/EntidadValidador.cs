@@ -10,5 +10,10 @@ namespace ECO.Dominio.Servicios.Implementaciones
             if (entidad == null)
                 throw new DatoNoEncontradoException(mensaje);
         }
+        public void ValidarDatoYaExiste(TEntity? entidad, string mensaje)
+        {
+            if (entidad != null)
+                throw new DatoYaExisteException(mensaje);
+        }
     }
 }

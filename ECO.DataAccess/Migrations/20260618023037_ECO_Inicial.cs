@@ -66,6 +66,38 @@ namespace ECO.DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "ECO_CorreosConfiguraciones",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EmpresaId = table.Column<int>(type: "int", nullable: false, comment: "Empresa propietaria de la configuración de correo electrónico."),
+                    Codigo = table.Column<string>(type: "varchar(30)", nullable: false, comment: "Código del proceso de la empresa.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Descripcion = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Nombre descriptivo de la configuración de correo.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Usuario = table.Column<string>(type: "varchar(150)", nullable: false, comment: "Usuario o cuenta de correo utilizada para el envío.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Clave = table.Column<string>(type: "varchar(500)", nullable: false, comment: "Clave o secreto utilizado para autenticación.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Host = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Servidor de correo.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Puerto = table.Column<int>(type: "int", nullable: false, comment: "Puerto utilizado para la conexión"),
+                    UsaSsl = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la conexión utiliza SSL/TLS."),
+                    UsaCredencialPorDefecto = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si se utilizan las credenciales predeterminadas del servidor."),
+                    CorreoRespuesta = table.Column<string>(type: "varchar(150)", nullable: false, comment: "Nombre o correo mostrado como remitente de respuesta.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Activo = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la configuración se encuentra activa."),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
+                    FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ECO_CorreosConfiguraciones", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ECO_CorreosAdjuntos",
                 columns: table => new
                 {
@@ -177,6 +209,17 @@ namespace ECO.DataAccess.Migrations
                 column: "CorreoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosConfiguraciones_EmpresaId",
+                table: "ECO_CorreosConfiguraciones",
+                column: "EmpresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_CorreosConfiguraciones_EmpresaId_Codigo",
+                table: "ECO_CorreosConfiguraciones",
+                columns: new[] { "EmpresaId", "Codigo" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ECO_CorreosDestinatarios_CorreoId",
                 table: "ECO_CorreosDestinatarios",
                 column: "CorreoId");
@@ -206,6 +249,9 @@ namespace ECO.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "ECO_CorreosAdjuntos");
+
+            migrationBuilder.DropTable(
+                name: "ECO_CorreosConfiguraciones");
 
             migrationBuilder.DropTable(
                 name: "ECO_CorreosDestinatarios");
