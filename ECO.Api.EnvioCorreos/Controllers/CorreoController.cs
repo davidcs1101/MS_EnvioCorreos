@@ -19,26 +19,24 @@ namespace ECO.Api.EnvioCorreos.Controllers
 
         [HttpPost("enviarCorreo")]  
         [Authorize]
-        public async Task<ActionResult<ApiResponse<int>>> EnviarCorreo(CorreoCreacionRequest datosCorreoRequest) 
+        public async Task<ActionResult<ApiResponse<Guid?>>> EnviarCorreo(CorreoCreacionRequest datosCorreoRequest) 
         {
             return await _correoServicio.CrearAsync(datosCorreoRequest);
         }
 
         [HttpPost("enviarCorreoEmpresa")]
-        [Authorize(Policy = "EnviarCorreoEmpresa")]
-        public async Task<ActionResult<ApiResponse<int>>> EnviarCorreoEmpresa(CorreoEmpresaCreacionRequest datosCorreoEmpresaRequest)
+        [Authorize]
+        //[Authorize(Policy = "EnviarCorreoEmpresa")]
+        public async Task<ActionResult<ApiResponse<Guid?>>> EnviarCorreoEmpresa(CorreoEmpresaCreacionRequest datosCorreoEmpresaRequest)
         {
             return await _correoServicio.CrearAsync(datosCorreoEmpresaRequest);
         }
 
-
-        //AUN FALTA AGREGARLO AL GATEWAY
-        [HttpGet("obtenerPorId")]
-        //[Authorize(Policy = "ConsultarCorreoEmpresa")]
+        [HttpGet("obtenerPorCodigo")]
         [Authorize]
-        public async Task<ActionResult<ApiResponse<CorreoDto?>>> ObtenerPorId(int id)
+        public async Task<ActionResult<ApiResponse<CorreoDto?>>> ObtenerPorCodigo(Guid codigo)
         {
-            return await _correoServicio.ObtenerPorIdYEmpresaIdAsync(id);
+            return await _correoServicio.ObtenerPorCodigoAsync(codigo);
         }
     }
 }

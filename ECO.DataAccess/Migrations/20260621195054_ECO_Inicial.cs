@@ -44,6 +44,7 @@ namespace ECO.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Codigo = table.Column<Guid>(type: "char(36)", nullable: false, comment: "Código único utilizado para consultar el correo.", collation: "ascii_general_ci"),
                     Asunto = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Asunto del correo electrónico")
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Cuerpo = table.Column<string>(type: "longtext", nullable: false, comment: "Contenido del correo electrónico.")
@@ -187,6 +188,12 @@ namespace ECO.DataAccess.Migrations
                 name: "IX_ECO_ColaSolicitudes_Tipo",
                 table: "ECO_ColaSolicitudes",
                 column: "Tipo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ECO_Correos_Codigo",
+                table: "ECO_Correos",
+                column: "Codigo",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ECO_Correos_Estado",

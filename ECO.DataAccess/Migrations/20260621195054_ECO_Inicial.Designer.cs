@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECO.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260618023037_ECO_Inicial")]
+    [Migration("20260621195054_ECO_Inicial")]
     partial class ECO_Inicial
     {
         /// <inheritdoc />
@@ -87,6 +87,10 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("varchar(250)")
                         .HasComment("Asunto del correo electrónico");
 
+                    b.Property<Guid>("Codigo")
+                        .HasColumnType("char(36)")
+                        .HasComment("Código único utilizado para consultar el correo.");
+
                     b.Property<string>("CorreoRespuesta")
                         .HasColumnType("varchar(150)")
                         .HasComment("Correo de respuesta (Reply-To).");
@@ -123,6 +127,9 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique();
 
                     b.HasIndex("Estado");
 

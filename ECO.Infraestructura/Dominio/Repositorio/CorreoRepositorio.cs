@@ -30,13 +30,13 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             return await _context.ECO_Correos.FindAsync(id);
         }
 
-        public async Task<ECO_Correo?> ObtenerPorIdYEmpresaIdAsync(int id, int empresaId) 
+        public async Task<ECO_Correo?> ObtenerPorCodigoAsync(Guid codigo)
         {
             return await _context.ECO_Correos
                 .Include(x => x.CorreosAdjuntos)
                 .Include(x => x.CorreosDestinatarios)
                 .Include(x => x.CorreoEml)
-                .FirstOrDefaultAsync(x => x.Id == id && x.EmpresaId == empresaId);
+                .FirstOrDefaultAsync(x => x.Codigo == codigo);
         }
 
         public async Task ModificarAsync(ECO_Correo correo)

@@ -7,5 +7,6 @@ namespace ECO.Dtos
     {
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]
         public int EmpresaId { get; set; }
+        public string? CodigoConfiguracionEnvio { get; set; }
     }
 }

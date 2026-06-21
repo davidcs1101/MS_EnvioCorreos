@@ -16,5 +16,7 @@ namespace ECO.Dtos
         public List<CorreoAdjuntoRequest> ArchivosAdjuntos { get; set; } = new List<CorreoAdjuntoRequest>();
         public AccionesRequest Acciones { get; set; } = new AccionesRequest();
         public int CorreoId { get; set; }
+        public string? CodigoConfiguracionEnvio { get; set; }
+        public int? EmpresaId { get; set; }
     }
 }

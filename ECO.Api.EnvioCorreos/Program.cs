@@ -102,7 +102,7 @@ builder.Services.AddSingleton<IAppSettings, AppSettings>();
 builder.Services.AddDbContext<AppDbContext>
     (opciones => opciones
     .UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    //ServerVersion.Parse("8.0.39-mysql")TrazabilidadCorreoSettings
+    //ServerVersion.Parse("8.0.39-mysql")
     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
 

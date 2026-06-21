@@ -84,6 +84,10 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("varchar(250)")
                         .HasComment("Asunto del correo electrónico");
 
+                    b.Property<Guid>("Codigo")
+                        .HasColumnType("char(36)")
+                        .HasComment("Código único utilizado para consultar el correo.");
+
                     b.Property<string>("CorreoRespuesta")
                         .HasColumnType("varchar(150)")
                         .HasComment("Correo de respuesta (Reply-To).");
@@ -120,6 +124,9 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique();
 
                     b.HasIndex("Estado");
 

@@ -3,7 +3,7 @@ namespace ECO.Aplicacion.CasosUso.Interfaces
 {
     public interface ICorreoServicio
     {
-        Task<ApiResponse<int>> CrearAsync(CorreoCreacionRequest datosCorreoRequest);
-        Task<ApiResponse<CorreoDto?>> ObtenerPorIdYEmpresaIdAsync(int id);
+        Task<ApiResponse<Guid?>> CrearAsync(CorreoCreacionRequest datosCorreoRequest);
+        Task<ApiResponse<CorreoDto?>> ObtenerPorCodigoAsync(Guid codigo);
     }
 }

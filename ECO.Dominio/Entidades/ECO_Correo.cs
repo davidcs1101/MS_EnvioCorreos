@@ -4,6 +4,7 @@ namespace ECO.Dominio.Entidades
     public class ECO_Correo : ECO_BaseAuditoria
     {
         public int Id { get; set; }
+        public Guid Codigo { get; set; } = Guid.NewGuid();
         public string Asunto { get; set; } = null!;
         public string Cuerpo { get; set; } = null!;
         public bool EsCuerpoHtml { get; set; }

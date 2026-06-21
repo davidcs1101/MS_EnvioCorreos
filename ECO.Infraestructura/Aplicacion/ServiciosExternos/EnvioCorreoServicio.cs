@@ -5,6 +5,7 @@ using ECO.Dominio.Entidades;
 using ECO.Dominio.Enumeraciones;
 using ECO.Dominio.Repositorio;
 using ECO.Dtos;
+using ECO.Dtos.AppSettings;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Utils;
@@ -18,18 +19,20 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
     {
         private readonly IAppSettings _appSettings;
         private readonly IApiResponse _apiResponse;
+        private readonly ICorreoConfiguracionRepositorio _correoConfiguracionRepositorio;
 
-        public EnvioCorreoServicio(IAppSettings appSettings, IApiResponse apiResponse)
+        public EnvioCorreoServicio(IAppSettings appSettings, IApiResponse apiResponse, ICorreoConfiguracionRepositorio correoConfiguracionRepositorio)
         {
             _appSettings = appSettings;
             _apiResponse = apiResponse;
+            _correoConfiguracionRepositorio = correoConfiguracionRepositorio;
         }
 
         public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoRequest datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
-            var settings = _appSettings.ObtenerConfiguracionCorreoSettings();
-            // Obtener la configuración del correo desde appsettings.json o una fuente similar
+            // Obtener la configuración del correo.
+            var settings = await ObtenerConfiguracionCorreo(datosCorreoDto.EmpresaId, datosCorreoDto.CodigoConfiguracionEnvio);
             var usuario = settings.Usuario;
             var clave = settings.Clave;
             var host = settings.Host;
@@ -158,6 +161,33 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             mensaje.WriteTo(stream);
 
             return stream.ToArray();
+        }
+        private async Task<ConfiguracionCorreoSettings> ObtenerConfiguracionCorreo(int? empresaId, string? codigoConfiguracionEnvio)
+        {
+            var settings = _appSettings.ObtenerConfiguracionCorreoSettings();
+            ECO_CorreoConfiguracion? configuracionEmpresa = null;
+
+            if (empresaId is not null)
+            {
+                string codigoConfiguracion = "PRINCIPAL";
+                if (!string.IsNullOrWhiteSpace(codigoConfiguracionEnvio))
+                    codigoConfiguracion = codigoConfiguracionEnvio;
+                
+                configuracionEmpresa = await _correoConfiguracionRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId.Value, codigoConfiguracion);
+
+                if (configuracionEmpresa is not null)
+                    settings = new ConfiguracionCorreoSettings()
+                    {
+                        Usuario = configuracionEmpresa.Usuario,
+                        Clave = configuracionEmpresa.Clave,
+                        Host = configuracionEmpresa.Host,
+                        Puerto = configuracionEmpresa.Puerto,
+                        UsaSsl = configuracionEmpresa.UsaSsl,
+                        UsaCredencialPorDefecto = configuracionEmpresa.UsaCredencialPorDefecto,
+                        CorreoRespuesta = configuracionEmpresa.CorreoRespuesta
+                    };
+            }
+            return settings;
         }
     }
 }

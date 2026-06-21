@@ -11,6 +11,7 @@ using ECO.Dominio.Servicios.Interfaces;
 using ECO.Dtos;
 using System.Text;
 using Utilidades;
+using static Utilidades.Textos;
 
 
 namespace ECO.Aplicacion.CasosUso.Implementaciones
@@ -50,24 +51,30 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             //_usuarioContextoServicio = usuarioContextoServicio;
         }
 
-        public async Task<ApiResponse<int>> CrearAsync(CorreoCreacionRequest datosCorreoRequest)
+        public async Task<ApiResponse<Guid?>> CrearAsync(CorreoCreacionRequest datosCorreoRequest)
         {
             var id = 0;
             var cola = new ECO_ColaSolicitud();
             var trazabilidadCorreo = _appSettings.ObtenerTrazabilidadCorreoSettings();
+            Guid? codigo = null;
+            string? codigoConfiguracionEnvio = null;
             await _procesadorTransacciones.EjecutarEnTransaccionAsync(async () =>
             {
                 //Creamos ECO_Correo
                 var correo = _mapper.DatoCorreoRequestACorreo(datosCorreoRequest);
                 correo.Estado = EstadoCorreo.Pendiente;
 
-                if (datosCorreoRequest is CorreoEmpresaCreacionRequest empresaRequest)
+                if (datosCorreoRequest is CorreoEmpresaCreacionRequest empresaRequest) 
+                {
                     correo.EmpresaId = empresaRequest.EmpresaId;
+                    codigoConfiguracionEnvio = empresaRequest.CodigoConfiguracionEnvio;
+                }
 
                 _correoRepositorio.MarcarCrear(correo);
                 await _unidadDeTrabajo.GuardarCambiosAsync();
                 id = correo.Id;
                 var usuarioId = correo.UsuarioCreadorId;
+                codigo = correo.Codigo;
 
                 //Creamos ECO_CorreoDestinatarios
                 if (trazabilidadCorreo.GuardarDetalleCorreo || 
@@ -90,22 +97,22 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 
                 var datosCorreo = _mapper.DatoCorreoRequestADatoCorreoDto(datosCorreoRequest);
                 datosCorreo.CorreoId = id;
+                datosCorreo.CodigoConfiguracionEnvio = codigoConfiguracionEnvio;
+                datosCorreo.EmpresaId = correo.EmpresaId;
                 cola = this.AgregarColaSolicitud(datosCorreo);
 
                 await _unidadDeTrabajo.GuardarCambiosAsync();
 
             });
 
-            return _apiResponse.CrearRespuesta(true, Textos.Generales.MENSAJE_REGISTRO_CREADO, id);
+            return _apiResponse.CrearRespuesta(true, Textos.Generales.MENSAJE_REGISTRO_CREADO, codigo);
         }
 
-        public async Task<ApiResponse<CorreoDto?>> ObtenerPorIdYEmpresaIdAsync(int id) 
+        public async Task<ApiResponse<CorreoDto?>> ObtenerPorCodigoAsync(Guid codigo) 
         {
-            var empresaId = 1;//Esto se debe obtener desde el token empresarial   
-            var correo = await _correoRepositorio.ObtenerPorIdYEmpresaIdAsync(id, empresaId);
+            var correo = await _correoRepositorio.ObtenerPorCodigoAsync(codigo);
             _correoValidadorServicio.ValidarDatoNoEncontrado(correo, Textos.Correos.MENSAJE_CORREO_NO_EXISTE_ID);
 
-            //var correoDto = _mapper.CorreoACorreoDto(correo);
             var correoDto = new CorreoDto()
             {
                 Id = correo.Id,
@@ -167,13 +174,9 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             }
             correoDto.CorreosEml = eml;
 
-            //var texto = Encoding.UTF8.GetString(correo.CorreoEml.ContenidoArchivo);
-            //Console.WriteLine(texto.Substring(0, 500));
-            //File.WriteAllBytes(@"C:\Temp\correo_desde_bd.eml",correo.CorreoEml.ContenidoArchivo);
-
-
             return _apiResponse.CrearRespuesta<CorreoDto?>(true, "", correoDto);
         }
+
 
         private ECO_ColaSolicitud AgregarColaSolicitud(DatosCorreoRequest datoCorreoDto)
         {

@@ -19,15 +19,18 @@ namespace ECO.Api.EnvioCorreos.Controllers
 
         [HttpPost("crear")]  
         [Authorize]
+        //[Authorize(Policy = "CrearCorreoConfiguracion")]
         public async Task<ActionResult<ApiResponse<int>>> Crear(CorreoConfiguracionCreacionRequest datosCorreoRequest) 
         {
             return await _correoConfiguracionServicio.CrearAsync(datosCorreoRequest);
         }
 
         [HttpGet("obtenerPorCodigo")]
-        public async Task<ActionResult<ApiResponse<CorreoConfiguracionDto?>>> ObtenerPorCodigo(CorreoConfiguracionCreacionRequest datosCorreoConfiguracionRequest)
+        [Authorize]
+        //[Authorize(Policy = "ConsultarCorreoConfiguracion")]
+        public async Task<ActionResult<ApiResponse<CorreoConfiguracionDto?>>> ObtenerPorCodigo(string codigo)
         {
-            return await _correoConfiguracionServicio.ObtenerPorCodigoAsync(datosCorreoConfiguracionRequest.Codigo);
+            return await _correoConfiguracionServicio.ObtenerPorCodigoAsync(codigo);
         }
     }
 }
