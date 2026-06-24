@@ -21,6 +21,7 @@ namespace ECO.DataAccess
         public DbSet<ECO_CorreoDestinatario> ECO_CorreosDestinatarios { get; set; }
         public DbSet<ECO_CorreoAdjunto> ECO_CorreosAdjuntos { get; set; }
         public DbSet<ECO_CorreoEml> ECO_CorreosEml { get; set; }
-        public DbSet<ECO_CorreoConfiguracion> ECO_CorreosConfiguraciones { get; set; }
+        public DbSet<ECO_Configuracion> ECO_Configuraciones { get; set; }
+        public DbSet<ECO_Plantilla> ECO_Plantillas { get; set; }
     }
 }

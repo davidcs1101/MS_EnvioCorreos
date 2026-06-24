@@ -1,6 +1,6 @@
 ﻿namespace ECO.Dominio.Entidades
 {
-    public class ECO_CorreoConfiguracion : ECO_BaseAuditoria
+    public class ECO_Configuracion : ECO_BaseAuditoria
     {
         public int Id { get; set; }
         public int EmpresaId { get; set; }
@@ -14,6 +14,6 @@
         public bool UsaSsl { get; set; }
         public bool UsaCredencialPorDefecto { get; set; }
         public string CorreoRespuesta { get; set; } = null!;
-        public bool Activo { get; set; } = true;
+        public bool Estado { get; set; } = true;
     }
 }

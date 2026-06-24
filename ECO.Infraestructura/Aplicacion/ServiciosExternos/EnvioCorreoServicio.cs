@@ -165,7 +165,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
         private async Task<ConfiguracionCorreoSettings> ObtenerConfiguracionCorreo(int? empresaId, string? codigoConfiguracionEnvio)
         {
             var settings = _appSettings.ObtenerConfiguracionCorreoSettings();
-            ECO_CorreoConfiguracion? configuracionEmpresa = null;
+            ECO_Configuracion? configuracionEmpresa = null;
 
             if (empresaId is not null)
             {

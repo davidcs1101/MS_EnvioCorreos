@@ -14,26 +14,26 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             _context = context;
         }
 
-        public async Task<ECO_CorreoConfiguracion?> ObtenerPorIdAsync(int id)
+        public async Task<ECO_Configuracion?> ObtenerPorIdAsync(int id)
         {
-            return await _context.ECO_CorreosConfiguraciones.FindAsync(id);
+            return await _context.ECO_Configuraciones.FindAsync(id);
         }
 
-        public async Task<ECO_CorreoConfiguracion?> ObtenerPorEmpresaIdYCodigoAsync(int empresaId, string codigo) 
+        public async Task<ECO_Configuracion?> ObtenerPorEmpresaIdYCodigoAsync(int empresaId, string codigo) 
         {
-            return await _context.ECO_CorreosConfiguraciones
+            return await _context.ECO_Configuraciones
                 .FirstOrDefaultAsync(x => x.EmpresaId == empresaId && x.Codigo == codigo);
         }
 
-        public async Task ModificarAsync(ECO_CorreoConfiguracion correoConfiguracion)
+        public async Task ModificarAsync(ECO_Configuracion correoConfiguracion)
         {
-            _context.ECO_CorreosConfiguraciones.Update(correoConfiguracion);
+            _context.ECO_Configuraciones.Update(correoConfiguracion);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<int> CrearAsync(ECO_CorreoConfiguracion correoConfiguracion)
+        public async Task<int> CrearAsync(ECO_Configuracion correoConfiguracion)
         {
-            _context.ECO_CorreosConfiguraciones.Add(correoConfiguracion);
+            _context.ECO_Configuraciones.Add(correoConfiguracion);
             await _context.SaveChangesAsync();
             return correoConfiguracion.Id;
         }

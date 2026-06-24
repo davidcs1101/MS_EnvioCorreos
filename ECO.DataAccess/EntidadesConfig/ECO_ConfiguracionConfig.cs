@@ -4,9 +4,9 @@ using ECO.Dominio.Entidades;
 
 namespace ECO.DataAccess.EntidadesConfig
 {
-    public class ECO_CorreoConfiguracionConfig : IEntityTypeConfiguration<ECO_CorreoConfiguracion>
+    public class ECO_ConfiguracionConfig : IEntityTypeConfiguration<ECO_Configuracion>
     {
-        public void Configure(EntityTypeBuilder<ECO_CorreoConfiguracion> builder) 
+        public void Configure(EntityTypeBuilder<ECO_Configuracion> builder) 
         {
             builder.HasKey(x => x.Id);
 
@@ -46,7 +46,7 @@ namespace ECO.DataAccess.EntidadesConfig
             builder.Property(x => x.EmpresaId)
                 .HasComment("Empresa propietaria de la configuración de correo electrónico.");
 
-            builder.Property(x => x.Activo)
+            builder.Property(x => x.Estado)
                 .HasComment("Indica si la configuración se encuentra activa.");
 
             builder.Property(x => x.FechaCreado)

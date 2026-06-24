@@ -23,13 +23,13 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IApiResponse _apiResponse;
 
         private readonly ISerializadorJsonServicio _serializadorJsonServicio;
-        private readonly IEntidadValidador<ECO_CorreoConfiguracion> _correoConfiguracionValidadorServicio;
+        private readonly IEntidadValidador<ECO_Configuracion> _correoConfiguracionValidadorServicio;
         private readonly IUsuarioContextoServicio _usuarioContextoServicio;
 
         private readonly IAppSettings _appSettings;
 
 
-        public CorreoConfiguracionServicio(ICorreoConfiguracionRepositorio correoConfiguracionRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_CorreoConfiguracion> correoConfiguracionValidadorServicio, IUsuarioContextoServicio usuarioContextoServicio)
+        public CorreoConfiguracionServicio(ICorreoConfiguracionRepositorio correoConfiguracionRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Configuracion> correoConfiguracionValidadorServicio, IUsuarioContextoServicio usuarioContextoServicio)
         {
             _correoConfiguracionRepositorio = correoConfiguracionRepositorio;
             _mapper = mapper;
