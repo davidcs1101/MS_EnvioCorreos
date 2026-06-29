@@ -60,7 +60,9 @@ namespace ECO.DataAccess.Migrations
                     UsaCredencialPorDefecto = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si se utilizan las credenciales predeterminadas del servidor."),
                     CorreoRespuesta = table.Column<string>(type: "varchar(150)", nullable: false, comment: "Nombre o correo mostrado como remitente de respuesta.")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Estado = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la configuración se encuentra activa."),
+                    EstadoActivo = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la configuración se encuentra activa."),
+                    UsuarioModificadorId = table.Column<int>(type: "int", nullable: true),
+                    FechaModificado = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -85,7 +87,9 @@ namespace ECO.DataAccess.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Html = table.Column<string>(type: "TEXT", nullable: false, comment: "Contenido HTML de la plantilla de correo.")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Estado = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la plantilla de correo se encuentra activa."),
+                    EstadoActivo = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si la plantilla de correo se encuentra activa."),
+                    UsuarioModificadorId = table.Column<int>(type: "int", nullable: true),
+                    FechaModificado = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
                     FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
                 },

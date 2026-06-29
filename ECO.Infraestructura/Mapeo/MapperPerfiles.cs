@@ -8,9 +8,12 @@ namespace ECO.Infraestructura.Mapeo
     [Mapper]
     public partial class MapperPerfiles : IMapperPerfiles
     {
-        public partial DatosCorreoDto DatoCorreoRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
-        public partial ECO_Correo DatoCorreoRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
-        public partial ECO_Configuracion CorreoConfiguracionCreacionRequestACorreoConfiguracion(CorreoConfiguracionCreacionRequest correoConfiguracionCreacionRequest);
-        public partial CorreoConfiguracionDto CorreoConfiguracionACorreoConfiguracionDto(ECO_Configuracion correoConfiguracion);
+        public partial DatosCorreoDto CorreoCreacionRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
+        public partial ECO_Correo CorreoCreacionRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
+        
+        public partial ECO_Configuracion ConfiguracionCreacionRequestACorreoConfiguracion(ConfiguracionCreacionRequest correoConfiguracionCreacionRequest);
+        public partial ConfiguracionDto ConfiguracionACorreoConfiguracionDto(ECO_Configuracion correoConfiguracion);
+        //public partial ECO_Configuracion ConfiguracionModificacionRequestACorreoConfiguracion(ConfiguracionModificacionRequest correoConfiguracionModificacionRequest);
+        public partial void ConfiguracionModificacionRequestACorreoConfiguracion(ConfiguracionModificacionRequest source, ECO_Configuracion target);
     }
 }

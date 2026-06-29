@@ -29,7 +29,7 @@ namespace ECO.DataAccess.EntidadesConfig
                 .HasColumnType("TEXT")
                 .HasComment("Contenido HTML de la plantilla de correo.");
 
-            builder.Property(x => x.Estado)
+            builder.Property(x => x.EstadoActivo)
                 .HasComment("Indica si la plantilla de correo se encuentra activa.");
 
             builder.Property(x => x.FechaCreado)

@@ -37,5 +37,10 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             await _context.SaveChangesAsync();
             return plantilla.Id;
         }
+
+        public IQueryable<ECO_Plantilla> ListarPorEmpresaId(int empresaId)
+        {
+            return _context.ECO_Plantillas.Where(x => x.EmpresaId == empresaId);
+        }
     }
 }

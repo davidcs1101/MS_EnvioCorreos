@@ -46,7 +46,7 @@ namespace ECO.DataAccess.EntidadesConfig
             builder.Property(x => x.EmpresaId)
                 .HasComment("Empresa propietaria de la configuración de correo electrónico.");
 
-            builder.Property(x => x.Estado)
+            builder.Property(x => x.EstadoActivo)
                 .HasComment("Indica si la configuración se encuentra activa.");
 
             builder.Property(x => x.FechaCreado)

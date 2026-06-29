@@ -8,6 +8,8 @@ namespace ECO.Dominio.Repositorio
         Task<ECO_Plantilla?> ObtenerPorEmpresaIdYCodigoAsync(int empresaId, string codigo);
 
         Task<int> CrearAsync(ECO_Plantilla plantilla);
-        Task ModificarAsync(ECO_Plantilla plantilla);    
+        Task ModificarAsync(ECO_Plantilla plantilla);
+
+        IQueryable<ECO_Plantilla> ListarPorEmpresaId(int empresaId);
     }
 }

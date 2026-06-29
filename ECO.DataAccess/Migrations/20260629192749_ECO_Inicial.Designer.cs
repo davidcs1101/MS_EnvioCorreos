@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECO.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260628223918_ECO_Inicial")]
+    [Migration("20260629192749_ECO_Inicial")]
     partial class ECO_Inicial
     {
         /// <inheritdoc />
@@ -106,12 +106,15 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasComment("Empresa propietaria de la configuración de correo electrónico.");
 
-                    b.Property<bool>("Estado")
+                    b.Property<bool>("EstadoActivo")
                         .HasColumnType("tinyint(1)")
                         .HasComment("Indica si la configuración se encuentra activa.");
 
                     b.Property<DateTime>("FechaCreado")
                         .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaModificado")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Host")
                         .IsRequired()
@@ -136,6 +139,9 @@ namespace ECO.DataAccess.Migrations
                         .HasComment("Usuario o cuenta de correo utilizada para el envío.");
 
                     b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioModificadorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -365,12 +371,15 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasComment("Empresa propietaria de la plantilla de correo.");
 
-                    b.Property<bool>("Estado")
+                    b.Property<bool>("EstadoActivo")
                         .HasColumnType("tinyint(1)")
                         .HasComment("Indica si la plantilla de correo se encuentra activa.");
 
                     b.Property<DateTime>("FechaCreado")
                         .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("FechaModificado")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Html")
                         .IsRequired()
@@ -383,6 +392,9 @@ namespace ECO.DataAccess.Migrations
                         .HasComment("Nombre de la plantilla de correo.");
 
                     b.Property<int>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioModificadorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

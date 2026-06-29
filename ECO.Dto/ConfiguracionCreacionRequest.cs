@@ -4,7 +4,7 @@ using Utilidades.AtributosValidaciones;
 
 namespace ECO.Dtos
 {
-    public class CorreoConfiguracionCreacionRequest
+    public class ConfiguracionCreacionRequest
     {
 
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]

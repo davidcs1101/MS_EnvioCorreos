@@ -1,5 +1,4 @@
 ﻿using ECO.Dominio.Entidades;
-
 namespace ECO.Dominio.Repositorio
 {
     public interface IConfiguracionRepositorio
@@ -8,6 +7,8 @@ namespace ECO.Dominio.Repositorio
         Task<ECO_Configuracion?> ObtenerPorEmpresaIdYCodigoAsync(int empresaId, string codigo);
 
         Task<int> CrearAsync(ECO_Configuracion correoConfiguracion);
-        Task ModificarAsync(ECO_Configuracion correoConfiguracion);    
+        Task ModificarAsync(ECO_Configuracion correoConfiguracion);
+
+        IQueryable<ECO_Configuracion> ListarPorEmpresaId(int empresaId);
     }
 }

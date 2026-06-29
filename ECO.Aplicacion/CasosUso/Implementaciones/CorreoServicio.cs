@@ -81,7 +81,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 
 
                 //Creamos ECO_Correo
-                var correo = _mapper.DatoCorreoRequestACorreo(datosCorreoRequest);
+                var correo = _mapper.CorreoCreacionRequestACorreo(datosCorreoRequest);
                 correo.Estado = EstadoCorreo.Pendiente;
                 correo.EmpresaId = empresaId;
                 correo.PlantillaId = plantillaId;
@@ -111,7 +111,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                     datosCorreoRequest.Acciones.GuardarEmlCorreo;
 
 
-                var datosCorreo = _mapper.DatoCorreoRequestADatoCorreoDto(datosCorreoRequest);
+                var datosCorreo = _mapper.CorreoCreacionRequestADatoCorreoDto(datosCorreoRequest);
                 datosCorreo.CorreoId = id;
                 datosCorreo.CodigoConfiguracionEnvio = codigoConfiguracionEnvio;
                 datosCorreo.EmpresaId = correo.EmpresaId;

@@ -37,5 +37,10 @@ namespace ECO.Infraestructura.Dominio.Repositorio
             await _context.SaveChangesAsync();
             return correoConfiguracion.Id;
         }
+
+        public IQueryable<ECO_Configuracion> ListarPorEmpresaId(int empresaId)
+        {
+            return _context.ECO_Configuraciones.Where(x => x.EmpresaId == empresaId);
+        }
     }
 }

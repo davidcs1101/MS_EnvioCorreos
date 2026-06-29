@@ -14,6 +14,8 @@
         public bool UsaSsl { get; set; }
         public bool UsaCredencialPorDefecto { get; set; }
         public string CorreoRespuesta { get; set; } = null!;
-        public bool Estado { get; set; } = true;
+        public bool EstadoActivo { get; set; } = true;
+        public int? UsuarioModificadorId { get; set; }
+        public DateTime? FechaModificado { get; set; }
     }
 }

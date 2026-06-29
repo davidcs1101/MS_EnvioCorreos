@@ -79,7 +79,7 @@ builder.Services.AddScoped<IColaSolicitudValidador, ColaSolicitudValidador>();
 builder.Services.AddScoped<IUnidadDeTrabajo, UnidadDeTrabajoEF>();
 
 builder.Services.AddScoped<IConfiguracionRepositorio, ConfiguracionRepositorio>();
-builder.Services.AddScoped<ICorreoConfiguracionServicio, CorreoConfiguracionServicio>();
+builder.Services.AddScoped<ICorreoConfiguracionServicio, ConfiguracionServicio>();
 
 //Servicio que obtiene el UsuarioId del Token
 builder.Services.AddScoped<IUsuarioContextoServicio, UsuarioContextoServicio>();
