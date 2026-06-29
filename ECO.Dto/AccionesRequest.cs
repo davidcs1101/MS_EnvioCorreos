@@ -1,6 +1,4 @@
-﻿using Utilidades.AtributosValidaciones;
-
-namespace ECO.Dtos
+﻿namespace ECO.Dtos
 {
     public class AccionesRequest
     {

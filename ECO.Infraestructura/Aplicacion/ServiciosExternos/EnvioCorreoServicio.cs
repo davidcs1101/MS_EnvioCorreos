@@ -19,16 +19,16 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
     {
         private readonly IAppSettings _appSettings;
         private readonly IApiResponse _apiResponse;
-        private readonly ICorreoConfiguracionRepositorio _correoConfiguracionRepositorio;
+        private readonly IConfiguracionRepositorio _correoConfiguracionRepositorio;
 
-        public EnvioCorreoServicio(IAppSettings appSettings, IApiResponse apiResponse, ICorreoConfiguracionRepositorio correoConfiguracionRepositorio)
+        public EnvioCorreoServicio(IAppSettings appSettings, IApiResponse apiResponse, IConfiguracionRepositorio correoConfiguracionRepositorio, IPlantillaRepositorio plantillaRepositorio)
         {
             _appSettings = appSettings;
             _apiResponse = apiResponse;
             _correoConfiguracionRepositorio = correoConfiguracionRepositorio;
         }
 
-        public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoRequest datosCorreoDto)
+        public async Task<ApiResponse<byte[]?>> EnviarCorreoAsync(DatosCorreoDto datosCorreoDto)
         {
             Logs.EscribirLog("i","Inicia envío mensajes de correo");
             // Obtener la configuración del correo.
@@ -60,7 +60,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
                 AgregarAdjuntos(mensaje, datosCorreoDto.ArchivosAdjuntos);
 
                 byte[] eml = null;
-                if (datosCorreoDto.Acciones.GuardarEmlCorreo)
+                if (datosCorreoDto.GuardarEmlCorreo)
                     eml = GenerarEml(datosCorreoDto, usuario, correoRespuesta);
 
                 using (var smtpClient = new SmtpClient(host, puerto))
@@ -78,7 +78,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
             }
         }
 
-        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoRequest datosCorreoDto)
+        private void AgregarDestinatarios(MailMessage mensaje, DatosCorreoDto datosCorreoDto)
         {
             foreach (var item in datosCorreoDto.Destinatarios)
                 mensaje.To.Add(item);
@@ -99,7 +99,7 @@ namespace ECO.Infraestructura.Aplicacion.ServiciosExternos
                 mensaje.Attachments.Add(attachment);
             }
         }
-        private byte[] GenerarEml(DatosCorreoRequest datosCorreoDto, string usuario, string correoRespuesta)
+        private byte[] GenerarEml(DatosCorreoDto datosCorreoDto, string usuario, string correoRespuesta)
         {
             var mensaje = new MimeMessage();
 

@@ -71,34 +71,6 @@ namespace ECO.DataAccess.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ECO_Correos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Codigo = table.Column<Guid>(type: "char(36)", nullable: false, comment: "Código único utilizado para consultar el correo.", collation: "ascii_general_ci"),
-                    Asunto = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Asunto del correo electrónico")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Cuerpo = table.Column<string>(type: "longtext", nullable: false, comment: "Contenido del correo electrónico.")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EsCuerpoHtml = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si el cuerpo del correo está en formato HTML."),
-                    CorreoRespuesta = table.Column<string>(type: "varchar(150)", nullable: true, comment: "Correo de respuesta (Reply-To).")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Estado = table.Column<int>(type: "int", nullable: false, comment: "Estado actual del correo (Pendiente = 0, Enviado = 1, Fallido = 2)."),
-                    ErrorMensaje = table.Column<string>(type: "text", nullable: true, comment: "Descripción del último error presentado durante el envío.")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FechaEnvio = table.Column<DateTime>(type: "datetime", nullable: true, comment: "Fecha y hora en que el correo fue enviado exitosamente."),
-                    EmpresaId = table.Column<int>(type: "int", nullable: true, comment: "Empresa desde la cual se solicitó el envío de correo"),
-                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
-                    FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ECO_Correos", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "ECO_Plantillas",
                 columns: table => new
                 {
@@ -120,6 +92,41 @@ namespace ECO.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ECO_Plantillas", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ECO_Correos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Codigo = table.Column<Guid>(type: "char(36)", nullable: false, comment: "Código único utilizado para consultar el correo.", collation: "ascii_general_ci"),
+                    Asunto = table.Column<string>(type: "varchar(250)", nullable: false, comment: "Asunto del correo electrónico")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Cuerpo = table.Column<string>(type: "longtext", nullable: false, comment: "Contenido del correo electrónico.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EsCuerpoHtml = table.Column<bool>(type: "tinyint(1)", nullable: false, comment: "Indica si el cuerpo del correo está en formato HTML."),
+                    CorreoRespuesta = table.Column<string>(type: "varchar(150)", nullable: true, comment: "Correo de respuesta (Reply-To).")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Estado = table.Column<int>(type: "int", nullable: false, comment: "Estado actual del correo (Pendiente = 0, Enviado = 1, Fallido = 2)."),
+                    ErrorMensaje = table.Column<string>(type: "text", nullable: true, comment: "Descripción del último error presentado durante el envío.")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FechaEnvio = table.Column<DateTime>(type: "datetime", nullable: true, comment: "Fecha y hora en que el correo fue enviado exitosamente."),
+                    EmpresaId = table.Column<int>(type: "int", nullable: true, comment: "Empresa desde la cual se solicitó el envío de correo"),
+                    PlantillaId = table.Column<int>(type: "int", nullable: true, comment: "Plantilla utilizada para generar el correo."),
+                    UsuarioCreadorId = table.Column<int>(type: "int", nullable: false),
+                    FechaCreado = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ECO_Correos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ECO_Correos_ECO_Plantillas_PlantillaId",
+                        column: x => x.PlantillaId,
+                        principalTable: "ECO_Plantillas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -247,6 +254,11 @@ namespace ECO.DataAccess.Migrations
                 column: "FechaEnvio");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ECO_Correos_PlantillaId",
+                table: "ECO_Correos",
+                column: "PlantillaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ECO_CorreosAdjuntos_CorreoId",
                 table: "ECO_CorreosAdjuntos",
                 column: "CorreoId");
@@ -303,10 +315,10 @@ namespace ECO.DataAccess.Migrations
                 name: "ECO_CorreosEml");
 
             migrationBuilder.DropTable(
-                name: "ECO_Plantillas");
+                name: "ECO_Correos");
 
             migrationBuilder.DropTable(
-                name: "ECO_Correos");
+                name: "ECO_Plantillas");
         }
     }
 }

@@ -71,13 +71,14 @@ builder.Services.AddScoped<ICorreoServicio, CorreoServicio>();
 builder.Services.AddScoped<ICorreoDestinatarioRepositorio, CorreoDestinatarioRepositorio>();
 builder.Services.AddScoped<ICorreoAdjuntoRepositorio, CorreoAdjuntoRepositorio>();
 builder.Services.AddScoped<ICorreoEmlRepositorio, CorreoEmlRepositorio>();
+builder.Services.AddScoped<IPlantillaRepositorio, PlantillaRepositorio>();
 
 builder.Services.AddScoped<IColaSolicitudRepositorio, ColaSolicitudRepositorio>();
 builder.Services.AddScoped<IColaSolicitudServicio, ColaSolicitudServicio>();
 builder.Services.AddScoped<IColaSolicitudValidador, ColaSolicitudValidador>();
 builder.Services.AddScoped<IUnidadDeTrabajo, UnidadDeTrabajoEF>();
 
-builder.Services.AddScoped<ICorreoConfiguracionRepositorio, CorreoConfiguracionRepositorio>();
+builder.Services.AddScoped<IConfiguracionRepositorio, ConfiguracionRepositorio>();
 builder.Services.AddScoped<ICorreoConfiguracionServicio, CorreoConfiguracionServicio>();
 
 //Servicio que obtiene el UsuarioId del Token

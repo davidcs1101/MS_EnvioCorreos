@@ -194,6 +194,10 @@ namespace ECO.DataAccess.Migrations
                         .HasColumnType("datetime")
                         .HasComment("Fecha y hora en que el correo fue enviado exitosamente.");
 
+                    b.Property<int?>("PlantillaId")
+                        .HasColumnType("int")
+                        .HasComment("Plantilla utilizada para generar el correo.");
+
                     b.Property<int>("UsuarioCreadorId")
                         .HasColumnType("int");
 
@@ -207,6 +211,8 @@ namespace ECO.DataAccess.Migrations
                     b.HasIndex("FechaCreado");
 
                     b.HasIndex("FechaEnvio");
+
+                    b.HasIndex("PlantillaId");
 
                     b.ToTable("ECO_Correos");
                 });
@@ -386,6 +392,16 @@ namespace ECO.DataAccess.Migrations
                     b.ToTable("ECO_Plantillas");
                 });
 
+            modelBuilder.Entity("ECO.Dominio.Entidades.ECO_Correo", b =>
+                {
+                    b.HasOne("ECO.Dominio.Entidades.ECO_Plantilla", "Plantilla")
+                        .WithMany("Correos")
+                        .HasForeignKey("PlantillaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Plantilla");
+                });
+
             modelBuilder.Entity("ECO.Dominio.Entidades.ECO_CorreoAdjunto", b =>
                 {
                     b.HasOne("ECO.Dominio.Entidades.ECO_Correo", "Correo")
@@ -426,6 +442,11 @@ namespace ECO.DataAccess.Migrations
                     b.Navigation("CorreosAdjuntos");
 
                     b.Navigation("CorreosDestinatarios");
+                });
+
+            modelBuilder.Entity("ECO.Dominio.Entidades.ECO_Plantilla", b =>
+                {
+                    b.Navigation("Correos");
                 });
 #pragma warning restore 612, 618
         }

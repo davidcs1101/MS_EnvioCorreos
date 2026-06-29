@@ -16,5 +16,9 @@ namespace ECO.Dominio.Entidades
         public List<ECO_CorreoDestinatario> CorreosDestinatarios { get; set; } = new();
         public List<ECO_CorreoAdjunto> CorreosAdjuntos { get; set; } = new();
         public ECO_CorreoEml? CorreoEml { get; set; }
+
+        public int? PlantillaId { get; set; }
+        public ECO_Plantilla? Plantilla { get; set; }
+
     }
 }

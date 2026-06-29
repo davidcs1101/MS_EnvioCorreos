@@ -36,6 +36,7 @@ namespace ECO.Infraestructura.Dominio.Repositorio
                 .Include(x => x.CorreosAdjuntos)
                 .Include(x => x.CorreosDestinatarios)
                 .Include(x => x.CorreoEml)
+                .Include(x => x.Plantilla)
                 .FirstOrDefaultAsync(x => x.Codigo == codigo);
         }
 

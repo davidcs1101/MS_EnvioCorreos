@@ -13,10 +13,10 @@ namespace ECO.Dtos
         public string? ErrorMensaje { get; set; }
         public DateTime? FechaEnvio { get; set; }
         public int? EmpresaId { get; set; }
+        public string? CodigoPlantilla { get; set; }
 
         public List<CorreoAdjuntoDto> CorreosAdjuntos { get; set; } = new List<CorreoAdjuntoDto>();
         public List<CorreoDestinatarioDto> CorreosDestinatarios { get; set; } = new List<CorreoDestinatarioDto>();
-        public CorreoEmlDto CorreosEml { get; set; } = new CorreoEmlDto();
 
         public DateTime FechaCreado { get; set; }
         public int? UsuarioCreadorId { get; set; }

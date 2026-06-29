@@ -17,7 +17,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 {
     public class CorreoConfiguracionServicio : ICorreoConfiguracionServicio
     {
-        private readonly ICorreoConfiguracionRepositorio _correoConfiguracionRepositorio;
+        private readonly IConfiguracionRepositorio _correoConfiguracionRepositorio;
 
         private readonly IMapperPerfiles _mapper;
         private readonly IApiResponse _apiResponse;
@@ -29,7 +29,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IAppSettings _appSettings;
 
 
-        public CorreoConfiguracionServicio(ICorreoConfiguracionRepositorio correoConfiguracionRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Configuracion> correoConfiguracionValidadorServicio, IUsuarioContextoServicio usuarioContextoServicio)
+        public CorreoConfiguracionServicio(IConfiguracionRepositorio correoConfiguracionRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Configuracion> correoConfiguracionValidadorServicio, IUsuarioContextoServicio usuarioContextoServicio)
         {
             _correoConfiguracionRepositorio = correoConfiguracionRepositorio;
             _mapper = mapper;
@@ -46,7 +46,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             var usuarioId = _usuarioContextoServicio.ObtenerUsuarioIdToken();
 
             var correoConfiguracionExiste = await _correoConfiguracionRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId, correoConfiguracionCreacionRequest.Codigo);
-            _correoConfiguracionValidadorServicio.ValidarDatoYaExiste(correoConfiguracionExiste, Textos.CorreosConfiguraciones.MENSAJE_CORREOCONFIGURACION_CODIGO_EXISTE);
+            _correoConfiguracionValidadorServicio.ValidarDatoYaExiste(correoConfiguracionExiste, Textos.Configuraciones.MENSAJE_CORREOCONFIGURACION_CODIGO_EXISTE);
 
             var correoConfiguracion = _mapper.CorreoConfiguracionCreacionRequestACorreoConfiguracion(correoConfiguracionCreacionRequest);
             correoConfiguracion.EmpresaId = empresaId;
@@ -61,7 +61,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         {
             var empresaId = _usuarioContextoServicio.ObtenerEmpresaIdToken();
             var correoConfiguracion = await _correoConfiguracionRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId, codigo);
-            _correoConfiguracionValidadorServicio.ValidarDatoNoEncontrado(correoConfiguracion, Textos.CorreosConfiguraciones.MENSAJE_CORREOCONFIGURACION_NO_EXISTE_CODIGO);
+            _correoConfiguracionValidadorServicio.ValidarDatoNoEncontrado(correoConfiguracion, Textos.Configuraciones.MENSAJE_CORREOCONFIGURACION_NO_EXISTE_CODIGO);
 
             var correoConfiguracionDto = _mapper.CorreoConfiguracionACorreoConfiguracionDto(correoConfiguracion);
             return _apiResponse.CrearRespuesta<CorreoConfiguracionDto?>(true, "", correoConfiguracionDto);

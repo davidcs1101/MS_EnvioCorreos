@@ -4,5 +4,6 @@
     {
         int ObtenerUsuarioIdToken();
         int ObtenerEmpresaIdToken();
+        int ValidarEmpresaIdToken(int empresaIdBody);
     }
 }

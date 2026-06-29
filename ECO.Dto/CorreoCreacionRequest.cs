@@ -35,9 +35,11 @@ namespace ECO.Dtos
 
         public List<CorreoAdjuntoRequest> ArchivosAdjuntos { get; set; } = new List<CorreoAdjuntoRequest>();
 
-        public AccionesRequest Acciones { get; set; } = new AccionesRequest();
-
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]
         public int UsuarioCreadorId { get; set; }
+
+
+        public AccionesRequest Acciones { get; set; } = new AccionesRequest();
+
     }
 }

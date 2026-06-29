@@ -16,6 +16,5 @@ namespace ECO.Dtos
         public string? TipoContenido { get; set; }
         public long TamanoBytes { get; set; }
         public byte[] ContenidoArchivo { get; set; } = null!;
-        public string ContenidoArchivoB64 { get; set; } = null!;
     }
 }

@@ -42,6 +42,9 @@ namespace ECO.DataAccess.EntidadesConfig
             builder.Property(x => x.Codigo)
                 .HasComment("Código único utilizado para consultar el correo.");
 
+            builder.Property(x => x.PlantillaId)
+                .HasComment("Plantilla utilizada para generar el correo.");
+
 
             builder.HasMany(x => x.CorreosDestinatarios)
                 .WithOne(x => x.Correo)
@@ -58,11 +61,16 @@ namespace ECO.DataAccess.EntidadesConfig
                 .HasForeignKey<ECO_CorreoEml>(x => x.CorreoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(x => x.Plantilla)
+                .WithMany(x => x.Correos)
+                .HasForeignKey(x => x.PlantillaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasIndex(x => x.Estado);
             builder.HasIndex(x => x.FechaCreado);
             builder.HasIndex(x => x.FechaEnvio);
-            builder.HasIndex(x => x.Codigo)
-                .IsUnique();
+            builder.HasIndex(x => x.Codigo).IsUnique();
+            builder.HasIndex(x => x.PlantillaId);
         }
     }
 }

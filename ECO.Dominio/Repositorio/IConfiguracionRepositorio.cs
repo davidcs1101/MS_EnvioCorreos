@@ -2,7 +2,7 @@
 
 namespace ECO.Dominio.Repositorio
 {
-    public interface ICorreoConfiguracionRepositorio
+    public interface IConfiguracionRepositorio
     {
         Task<ECO_Configuracion?> ObtenerPorIdAsync(int id);
         Task<ECO_Configuracion?> ObtenerPorEmpresaIdYCodigoAsync(int empresaId, string codigo);

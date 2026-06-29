@@ -32,11 +32,18 @@ namespace ECO.Api.EnvioCorreos.Controllers
             return await _correoServicio.CrearAsync(datosCorreoEmpresaRequest);
         }
 
-        [HttpGet("obtenerPorCodigo")]
+        [HttpGet("obtenerCorreoPorCodigo")]
         [Authorize]
-        public async Task<ActionResult<ApiResponse<CorreoDto?>>> ObtenerPorCodigo(Guid codigo)
+        public async Task<ActionResult<ApiResponse<CorreoDto?>>> ObtenerCorreoPorCodigo(Guid codigo)
         {
-            return await _correoServicio.ObtenerPorCodigoAsync(codigo);
+            return await _correoServicio.ObtenerCorreoPorCodigoAsync(codigo);
+        }
+
+        [HttpGet("obtenerEmlPorCodigo")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse<CorreoEmlDto?>>> ObtenerEmlPorCodigo(Guid codigo)
+        {
+            return await _correoServicio.ObtenerEmlPorCodigoAsync(codigo);
         }
     }
 }

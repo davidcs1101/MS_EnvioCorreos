@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECO.Infraestructura.Dominio.Repositorio
 {
-    public class CorreoConfiguracionRepositorio : ICorreoConfiguracionRepositorio
+    public class ConfiguracionRepositorio : IConfiguracionRepositorio
     {
         private readonly AppDbContext _context;
 
-        public CorreoConfiguracionRepositorio(AppDbContext context)
+        public ConfiguracionRepositorio(AppDbContext context)
         {
             _context = context;
         }

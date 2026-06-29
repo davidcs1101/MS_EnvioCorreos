@@ -30,12 +30,13 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IProcesadorTransacciones _procesadorTransacciones;
         private readonly ISerializadorJsonServicio _serializadorJsonServicio;
         private readonly IEntidadValidador<ECO_Correo> _correoValidadorServicio;
-        //private readonly IUsuarioContextoServicio _usuarioContextoServicio;
+        private readonly IEntidadValidador<ECO_Plantilla> _plantillaValidadorServicio;
+        private readonly IPlantillaRepositorio _plantillaRepositorio;
+        private readonly IUsuarioContextoServicio _usuarioContextoServicio;
 
         private readonly IAppSettings _appSettings;
 
-
-        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IUsuarioContextoServicio usuarioContextoServicio, IAppSettings appSettings, IEntidadValidador<ECO_Correo> correoValidadorServicio)
+        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Correo> correoValidadorServicio, IPlantillaRepositorio plantillaRepositorio, IUsuarioContextoServicio usuarioContextoServicio, IEntidadValidador<ECO_Plantilla> plantillaValidadorServicio)
         {
             _correoRepositorio = correoRepositorio;
             _correoDestinatarioRepositorio = correoDestinatarioRepositorio;
@@ -48,7 +49,9 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             _serializadorJsonServicio = serializadorJsonServicio;
             _appSettings = appSettings;
             _correoValidadorServicio = correoValidadorServicio;
-            //_usuarioContextoServicio = usuarioContextoServicio;
+            _plantillaRepositorio = plantillaRepositorio;
+            _usuarioContextoServicio = usuarioContextoServicio;
+            _plantillaValidadorServicio = plantillaValidadorServicio;
         }
 
         public async Task<ApiResponse<Guid?>> CrearAsync(CorreoCreacionRequest datosCorreoRequest)
@@ -58,17 +61,30 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             var trazabilidadCorreo = _appSettings.ObtenerTrazabilidadCorreoSettings();
             Guid? codigo = null;
             string? codigoConfiguracionEnvio = null;
+            int? empresaId = null;
+            int? plantillaId = null;
             await _procesadorTransacciones.EjecutarEnTransaccionAsync(async () =>
             {
+                if (datosCorreoRequest is CorreoEmpresaCreacionRequest datosCorreoEmpresaRequest)
+                {
+                    empresaId = _usuarioContextoServicio.ValidarEmpresaIdToken(datosCorreoEmpresaRequest.EmpresaId);
+                    var plantilla = await ObtenerPlantillaPorEmpresaIdYCodigoAsync(empresaId, datosCorreoEmpresaRequest.Plantilla);
+                    if (plantilla is not null)
+                    {
+                        plantillaId = plantilla.Id;
+                        datosCorreoRequest.Asunto = ProcesarVariables(plantilla.Asunto, datosCorreoEmpresaRequest.Plantilla!.Variables);
+                        datosCorreoRequest.Cuerpo = ProcesarVariables(plantilla.Html, datosCorreoEmpresaRequest.Plantilla!.Variables);
+                        datosCorreoRequest.EsCuerpoHtml = true;
+                    }
+                    codigoConfiguracionEnvio = datosCorreoEmpresaRequest.CodigoConfiguracionEnvio;
+                }
+
+
                 //Creamos ECO_Correo
                 var correo = _mapper.DatoCorreoRequestACorreo(datosCorreoRequest);
                 correo.Estado = EstadoCorreo.Pendiente;
-
-                if (datosCorreoRequest is CorreoEmpresaCreacionRequest empresaRequest) 
-                {
-                    correo.EmpresaId = empresaRequest.EmpresaId;
-                    codigoConfiguracionEnvio = empresaRequest.CodigoConfiguracionEnvio;
-                }
+                correo.EmpresaId = empresaId;
+                correo.PlantillaId = plantillaId;
 
                 _correoRepositorio.MarcarCrear(correo);
                 await _unidadDeTrabajo.GuardarCambiosAsync();
@@ -90,7 +106,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 datosCorreoRequest.Acciones.GuardarAdjuntosCorreo)
                     CrearAdjuntos(id, datosCorreoRequest.ArchivosAdjuntos, usuarioId);
 
-                datosCorreoRequest.Acciones.GuardarEmlCorreo =
+                var guardarEmlCorreo =
                     trazabilidadCorreo.GuardarEmlCorreo ||
                     datosCorreoRequest.Acciones.GuardarEmlCorreo;
 
@@ -99,6 +115,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 datosCorreo.CorreoId = id;
                 datosCorreo.CodigoConfiguracionEnvio = codigoConfiguracionEnvio;
                 datosCorreo.EmpresaId = correo.EmpresaId;
+                datosCorreo.GuardarEmlCorreo = guardarEmlCorreo;
                 cola = this.AgregarColaSolicitud(datosCorreo);
 
                 await _unidadDeTrabajo.GuardarCambiosAsync();
@@ -108,7 +125,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             return _apiResponse.CrearRespuesta(true, Textos.Generales.MENSAJE_REGISTRO_CREADO, codigo);
         }
 
-        public async Task<ApiResponse<CorreoDto?>> ObtenerPorCodigoAsync(Guid codigo) 
+        public async Task<ApiResponse<CorreoDto?>> ObtenerCorreoPorCodigoAsync(Guid codigo) 
         {
             var correo = await _correoRepositorio.ObtenerPorCodigoAsync(codigo);
             _correoValidadorServicio.ValidarDatoNoEncontrado(correo, Textos.Correos.MENSAJE_CORREO_NO_EXISTE_ID);
@@ -127,6 +144,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 EmpresaId = correo.EmpresaId,
                 UsuarioCreadorId = correo.UsuarioCreadorId,
                 FechaCreado = correo.FechaCreado,
+                CodigoPlantilla = correo.PlantillaId.HasValue ? correo.Plantilla!.Codigo : null
             };
 
             var destinatarios = new List<CorreoDestinatarioDto>();
@@ -155,12 +173,20 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                     TipoContenido = adjunto.TipoContenido,
                     TamanoBytes = adjunto.TamanoBytes,
                     ContenidoArchivo = adjunto.ContenidoArchivo,
-                    ContenidoArchivoB64 = Convert.ToBase64String(adjunto.ContenidoArchivo)
                 };
                 adjuntos.Add(adjuntoDto);
             }
             correoDto.CorreosAdjuntos = adjuntos;
 
+            return _apiResponse.CrearRespuesta<CorreoDto?>(true, "", correoDto);
+        }
+
+        public async Task<ApiResponse<CorreoEmlDto?>> ObtenerEmlPorCodigoAsync(Guid codigo)
+        {
+            var correo = await _correoRepositorio.ObtenerPorCodigoAsync(codigo);
+            _correoValidadorServicio.ValidarDatoNoEncontrado(correo, Textos.Correos.MENSAJE_CORREO_NO_EXISTE_ID);
+
+            CorreoEmlDto? eml = null;
             if (correo.CorreoEml != null)
             {
                 eml = new CorreoEmlDto()
@@ -169,16 +195,16 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                     Nombre = correo.CorreoEml.Nombre,
                     TamanoBytes = correo.CorreoEml.TamanoBytes,
                     ContenidoArchivo = correo.CorreoEml.ContenidoArchivo,
-                    ContenidoArchivoB64 = Convert.ToBase64String(correo.CorreoEml.ContenidoArchivo)
+                    FechaCreado = correo.CorreoEml.FechaCreado,
+                    UsuarioCreadorId = correo.CorreoEml.UsuarioCreadorId
                 };
             }
-            correoDto.CorreosEml = eml;
-
-            return _apiResponse.CrearRespuesta<CorreoDto?>(true, "", correoDto);
+            return _apiResponse.CrearRespuesta<CorreoEmlDto?>(true, "", eml);
         }
 
 
-        private ECO_ColaSolicitud AgregarColaSolicitud(DatosCorreoRequest datoCorreoDto)
+
+        private ECO_ColaSolicitud AgregarColaSolicitud(DatosCorreoDto datoCorreoDto)
         {
             var solicitud = new ECO_ColaSolicitud
             {
@@ -190,7 +216,6 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
             _colaSolicitudRepositorio.MarcarCrear(solicitud);
             return solicitud;
         }
-
         private void CrearDestinatarios(int correoId,List<string> destinatarios, TipoDestinatario tipoDestinatario, int usuarioCreadorId) 
         {
             foreach (var destinatario in destinatarios)
@@ -204,7 +229,6 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 _correoDestinatarioRepositorio.MarcarCrear(correoDestinatario);
             }
         }
-
         private void CrearAdjuntos(int correoId, List<CorreoAdjuntoRequest> adjuntosB64, int usuarioCreadorId) 
         {
             foreach (var adjunto in adjuntosB64)
@@ -222,6 +246,30 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 
                 _correoAdjuntoRepositorio.MarcarCrear(correoAdjunto);
             }
+        }
+
+        private async Task<ECO_Plantilla?> ObtenerPlantillaPorEmpresaIdYCodigoAsync(int? empresaId, PlantillaRequest? plantillaRequest)
+        {
+            if (empresaId is null || string.IsNullOrWhiteSpace(plantillaRequest?.Codigo))
+                return null;
+
+            var plantilla = await _plantillaRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId.Value, plantillaRequest.Codigo);
+            _plantillaValidadorServicio.ValidarDatoNoEncontrado(plantilla, Textos.Plantillas.MENSAJE_PLANTILLAS_NO_EXISTE_CODIGO);
+
+            return plantilla;
+        }
+        private string ProcesarVariables(string texto, Dictionary<string, string>? variables)
+        {
+            if (variables == null)
+                return texto;
+
+            foreach (var variable in variables)
+            {
+                texto = texto.Replace(
+                    $"{{{{{variable.Key}}}}}",
+                    variable.Value?.ToString() ?? "");
+            }
+            return texto;
         }
     }
 }

@@ -9,5 +9,6 @@
         public string Asunto { get; set; } = null!;
         public string Html { get; set; } = null!;
         public bool Estado { get; set; } = true;
+        public List<ECO_Correo> Correos { get; set; } = new();
     }
 }

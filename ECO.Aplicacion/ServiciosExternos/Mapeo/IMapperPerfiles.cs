@@ -5,7 +5,7 @@ namespace ECO.Aplicacion.ServiciosExternos.Mapeo
 {
     public interface IMapperPerfiles
     {
-        DatosCorreoRequest DatoCorreoRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
+        DatosCorreoDto DatoCorreoRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
         ECO_Correo DatoCorreoRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
         ECO_Configuracion CorreoConfiguracionCreacionRequestACorreoConfiguracion(CorreoConfiguracionCreacionRequest correoConfiguracionCreacionRequest);
         CorreoConfiguracionDto CorreoConfiguracionACorreoConfiguracionDto(ECO_Configuracion correoConfiguracion);
