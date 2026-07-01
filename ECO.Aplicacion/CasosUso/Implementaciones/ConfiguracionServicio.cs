@@ -15,7 +15,7 @@ using Utilidades;
 
 namespace ECO.Aplicacion.CasosUso.Implementaciones
 {
-    public class ConfiguracionServicio : ICorreoConfiguracionServicio
+    public class ConfiguracionServicio : IConfiguracionServicio
     {
         private readonly IConfiguracionRepositorio _configuracionRepositorio;
 

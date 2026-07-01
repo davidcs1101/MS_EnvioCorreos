@@ -254,7 +254,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
                 return null;
 
             var plantilla = await _plantillaRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId.Value, plantillaRequest.Codigo);
-            _plantillaValidadorServicio.ValidarDatoNoEncontrado(plantilla, Textos.Plantillas.MENSAJE_PLANTILLAS_NO_EXISTE_CODIGO);
+            _plantillaValidadorServicio.ValidarDatoNoEncontrado(plantilla, Textos.Plantillas.MENSAJE_PLANTILLA_NO_EXISTE_CODIGO);
 
             return plantilla;
         }

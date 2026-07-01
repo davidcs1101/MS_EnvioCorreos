@@ -1,5 +1,4 @@
-﻿using ECO.Dominio.Enumeraciones;
-namespace ECO.Dtos
+﻿namespace ECO.Dtos
 {
     public class ConfiguracionDto
     {

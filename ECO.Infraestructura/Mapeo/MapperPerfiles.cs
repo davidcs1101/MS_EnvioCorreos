@@ -11,9 +11,14 @@ namespace ECO.Infraestructura.Mapeo
         public partial DatosCorreoDto CorreoCreacionRequestADatoCorreoDto(CorreoCreacionRequest datoCorreoRequest);
         public partial ECO_Correo CorreoCreacionRequestACorreo(CorreoCreacionRequest datoCorreoRequest);
         
+
         public partial ECO_Configuracion ConfiguracionCreacionRequestACorreoConfiguracion(ConfiguracionCreacionRequest correoConfiguracionCreacionRequest);
         public partial ConfiguracionDto ConfiguracionACorreoConfiguracionDto(ECO_Configuracion correoConfiguracion);
-        //public partial ECO_Configuracion ConfiguracionModificacionRequestACorreoConfiguracion(ConfiguracionModificacionRequest correoConfiguracionModificacionRequest);
         public partial void ConfiguracionModificacionRequestACorreoConfiguracion(ConfiguracionModificacionRequest source, ECO_Configuracion target);
+
+
+        public partial ECO_Plantilla PlantillaCreacionRequestAPlantilla(PlantillaCreacionRequest plantillaCreacionRequest);
+        public partial PlantillaDto PlantillaAPlantillaDto(ECO_Plantilla plantilla);
+        public partial void PlantillaModificacionRequestAPlantilla(PlantillaModificacionRequest source, ECO_Plantilla target);
     }
 }

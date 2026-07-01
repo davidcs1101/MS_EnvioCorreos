@@ -1,7 +1,7 @@
 ﻿using ECO.Dtos;
 namespace ECO.Aplicacion.CasosUso.Interfaces
 {
-    public interface ICorreoConfiguracionServicio
+    public interface IConfiguracionServicio
     {
         Task<ApiResponse<int>> CrearAsync(ConfiguracionCreacionRequest CorreoConfiguracionCreacionRequest);
         Task<ApiResponse<ConfiguracionDto?>> ObtenerPorCodigoAsync(string codigo);

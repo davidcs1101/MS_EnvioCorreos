@@ -10,9 +10,9 @@ namespace ECO.Api.EnvioCorreos.Controllers
     [Route("api/configuracion")]
     public class ConfiguracionController : Controller
     {
-        private readonly ICorreoConfiguracionServicio _correoConfiguracionServicio;
+        private readonly IConfiguracionServicio _correoConfiguracionServicio;
 
-        public ConfiguracionController(ICorreoConfiguracionServicio correoConfiguracionServicio)
+        public ConfiguracionController(IConfiguracionServicio correoConfiguracionServicio)
         {
             _correoConfiguracionServicio = correoConfiguracionServicio;
         }
