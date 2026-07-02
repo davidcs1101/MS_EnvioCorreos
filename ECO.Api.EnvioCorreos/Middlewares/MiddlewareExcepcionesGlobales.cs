@@ -61,6 +61,11 @@ namespace ECO.Api.EnvioCorreos.Middlewares
                 contexto.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
                 respuesta.Mensaje = e.Message;
             }
+            else if (e is DatoInactivoException)
+            {
+                contexto.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                respuesta.Mensaje = e.Message;
+            }
             else
             {
                 contexto.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

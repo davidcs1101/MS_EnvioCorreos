@@ -13,7 +13,6 @@ namespace ECO.Dtos
         public string Nombre { get; set; } = null!;
 
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]
-        [EmailAddress(ErrorMessage = Textos.Generales.VALIDA_CORREO_NO_VALIDO)]
         public string Asunto { get; set; } = null!;
 
         [Required(ErrorMessage = Textos.Generales.VALIDA_CAMPO_OBLIGATORIO)]

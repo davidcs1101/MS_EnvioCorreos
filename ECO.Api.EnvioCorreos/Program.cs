@@ -81,6 +81,7 @@ builder.Services.AddScoped<IUnidadDeTrabajo, UnidadDeTrabajoEF>();
 
 builder.Services.AddScoped<IConfiguracionServicio, ConfiguracionServicio>();
 builder.Services.AddScoped<IPlantillaServicio, PlantillaServicio>();
+builder.Services.AddScoped<IPlantillaValidador, PlantillaValidador>();
 
 //Servicio que obtiene el UsuarioId del Token
 builder.Services.AddScoped<IUsuarioContextoServicio, UsuarioContextoServicio>();

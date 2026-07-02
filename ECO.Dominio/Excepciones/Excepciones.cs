@@ -19,4 +19,9 @@
     {
         public LoguinException(string mensaje) : base(mensaje) { }
     }
+
+    public class DatoInactivoException : Exception
+    {
+        public DatoInactivoException(string mensaje) : base(mensaje) { }
+    }
 }

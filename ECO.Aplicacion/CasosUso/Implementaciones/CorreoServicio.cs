@@ -30,13 +30,13 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
         private readonly IProcesadorTransacciones _procesadorTransacciones;
         private readonly ISerializadorJsonServicio _serializadorJsonServicio;
         private readonly IEntidadValidador<ECO_Correo> _correoValidadorServicio;
-        private readonly IEntidadValidador<ECO_Plantilla> _plantillaValidadorServicio;
+        private readonly IPlantillaValidador _plantillaValidadorServicio;
         private readonly IPlantillaRepositorio _plantillaRepositorio;
         private readonly IUsuarioContextoServicio _usuarioContextoServicio;
 
         private readonly IAppSettings _appSettings;
 
-        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Correo> correoValidadorServicio, IPlantillaRepositorio plantillaRepositorio, IUsuarioContextoServicio usuarioContextoServicio, IEntidadValidador<ECO_Plantilla> plantillaValidadorServicio)
+        public CorreoServicio(ICorreoRepositorio correoRepositorio, ICorreoDestinatarioRepositorio correoDestinatarioRepositorio, ICorreoAdjuntoRepositorio correoAdjuntoRepositorio, IColaSolicitudRepositorio colaSolicitudRepositorio, IMapperPerfiles mapper, IApiResponse apiResponse, IUnidadDeTrabajo unidadDeTrabajo, IProcesadorTransacciones procesadorTransacciones, ISerializadorJsonServicio serializadorJsonServicio, IAppSettings appSettings, IEntidadValidador<ECO_Correo> correoValidadorServicio, IPlantillaRepositorio plantillaRepositorio, IUsuarioContextoServicio usuarioContextoServicio, IPlantillaValidador plantillaValidadorServicio)
         {
             _correoRepositorio = correoRepositorio;
             _correoDestinatarioRepositorio = correoDestinatarioRepositorio;
@@ -255,6 +255,7 @@ namespace ECO.Aplicacion.CasosUso.Implementaciones
 
             var plantilla = await _plantillaRepositorio.ObtenerPorEmpresaIdYCodigoAsync(empresaId.Value, plantillaRequest.Codigo);
             _plantillaValidadorServicio.ValidarDatoNoEncontrado(plantilla, Textos.Plantillas.MENSAJE_PLANTILLA_NO_EXISTE_CODIGO);
+            _plantillaValidadorServicio.ValidarDatoActivo(plantilla!.EstadoActivo, Textos.Plantillas.MENSAJE_PLANTILLA_INACTIVA);
 
             return plantilla;
         }
